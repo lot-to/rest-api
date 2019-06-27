@@ -712,7 +712,7 @@ paths:
     get:
       tags:
         - Users
-      description: Fetch a user's username linked to their email or username.
+      description: Fetch a minimal user object linked to either a specified email or username parameter.
       operationId: getUserDetails
       parameters:
         - name: "email"
