@@ -1088,7 +1088,18 @@ components:
         - $ref: "#/components/schemas/PasswordComplexity"
         - $ref: "#/components/schemas/SystemException"
         - $ref: "#/components/schemas/UserWarning"
-               
+    LoginError:
+      oneOf:
+        - $ref: "#/components/schemas/GenericErrorCode"
+        - $ref: "#/components/schemas/InvalidEmail"
+        - $ref: "#/components/schemas/InvalidRequest"
+        - $ref: "#/components/schemas/InvalidToken"
+        - $ref: "#/components/schemas/MissingPassword"
+        - $ref: "#/components/schemas/SystemException"
+        - $ref: "#/components/schemas/UserExcluded"
+        - $ref: "#/components/schemas/LoginTimeout"
+        - $ref: "#/components/schemas/TooManyLoginFails"
+        
     MissingEmail:
       type: object
       required:
