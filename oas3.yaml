@@ -524,7 +524,7 @@ paths:
       security:
         - UserKeyAuth: []
       description: Get the authenticated users account details
-      operationId: getAuthUser
+      operationId: getCurrentUser
       responses:
         200:
           description: If the authentication token is valid, the user object will be
@@ -544,7 +544,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: "#/components/schemas/UserError"
   /user/me/balance:
     get:
       tags:
@@ -572,7 +572,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: "#/components/schemas/UserError"
   /user/password:
     put:
       tags:
@@ -592,7 +592,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: "#/components/schemas/PasswordResetError"
   /user/password/token:
     post:
       tags:
@@ -667,7 +667,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: "#/components/schemas/RefreshTokenError"
   /user:
     head:
       tags:
@@ -1101,7 +1101,20 @@ components:
         - $ref: "#/components/schemas/UserExcluded"
         - $ref: "#/components/schemas/LoginTimeout"
         - $ref: "#/components/schemas/TooManyLoginFails"
-        
+    RefreshTokenError:
+      oneOf:
+        - $ref: "#/components/schemas/GenericErrorCode"
+        - $ref: "#/components/schemas/UserExcluded"
+    PasswordResetError:
+      oneOf:
+        - $ref: "#/components/schemas/GenericErrorCode"
+        - $ref: "#/components/schemas/PasswordComplexity"
+        - $ref: "#/components/schemas/SystemException"
+        - $ref: "#/components/schemas/InvalidResetToken"
+    UserError:
+      oneOf:
+        - $ref: "#/components/schemas/GenericErrorCode"
+        - $ref: "#/components/schemas/UserExcluded"
     MissingEmail:
       type: object
       required:
