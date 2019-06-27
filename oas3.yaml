@@ -1360,7 +1360,31 @@ components:
           example: "ERR2002" 
         error:
           type: string
-          example: "Invalid or missing reset token parameter"          
+          example: "Minimum age requirement not met"
+    UserVerificationEmail:
+      type: object
+      required:
+        - code
+        - error
+      properties:
+        code:
+          type: string
+          example: "ERR2100" 
+        error:
+          type: string
+          example: "A user already exists with the details provided. If you have forgotten your password please use the password reset functionality."
+    AddressWarning:
+      type: object
+      required:
+        - code
+        - error
+      properties:
+        code:
+          type: string
+          example: "ERR2101" 
+        error:
+          type: string
+          example: "There might already be a user registered on the same address."          
     Event:
       type: object
       required:
