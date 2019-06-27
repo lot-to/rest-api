@@ -738,46 +738,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"         
-  /tote/pools:
-    get:
-      tags:
-        - Pools
-      description: |
-        Return a list of pools for today
-      operationId: getPools
-      parameters:
-        - name: pageKey
-          in: query
-          description: used during paginated responses
-          required: false
-          schema:
-            type: string
-        - name: limit
-          in: query
-          description: maximum number of results to return
-          required: false
-          schema:
-            type: integer
-            format: int32
-      responses:
-        200:
-          description: Returns an array of pool objects
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Pool"
-        400:
-          description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+    
+## Tote            
   /tote/cards:
     get:
       tags:
         - Cards
+        - Tote
       description: Return a list of cards for today
       operationId: getCards
       parameters:
@@ -809,6 +776,96 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  /tote/cards/{id}:
+    get:
+      tags:
+        - Cards
+        - Tote
+      description: Return a single card specified by its identifier
+      operationId: getCardById
+      responses:
+        200:
+          description: Return a single card object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Card"
+        400:
+          description: Standardised error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Standardised not found response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /tote/pools:
+    get:
+      tags:
+        - Pools
+        - Tote
+      description: |
+        Return a list of pools for today
+      operationId: getPools
+      parameters:
+        - name: pageKey
+          in: query
+          description: used during paginated responses
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: maximum number of results to return
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        200:
+          description: Returns an array of pool objectsp
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Pool"
+        400:
+          description: Standardised error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /tote/races/{id}:
+    get:
+      tags:
+        - Races
+        - Tote
+      description: Return a race object by its given identifier
+      operationId: getRaceById
+      responses:
+        200:
+          description: Returns a race object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Race"
+        400:
+          description: Standardised error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Standardised not found response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+                
 servers:
   - url: https://api.endpoints.gc-lotto-dev.cloud.goog/
 security:
@@ -2282,6 +2339,7 @@ components:
         - meet
         - performance
         - raceCount
+        - postTime
         - name
         - future
         - maxRunner
@@ -2289,7 +2347,6 @@ components:
         - countryCode
         - description
         - loadCode
-        - meetingCodeUK
         - updatedDate
         - currentRaceId
         - eventCode
@@ -2312,6 +2369,9 @@ components:
         raceCount:
           type: integer
           example: 6
+        postTime:
+          type: string
+          example: "17:55:00"
         name:
           type: string
           example: "STRATFORD"
@@ -2359,83 +2419,7 @@ components:
         races:
           type: array
           items:
-            type: object
-            required:
-              - id
-              - distance
-              - distanceText
-              - distanceUnit
-              - enabled
-              - numPositions
-              - name
-              - postTime
-              - raceType
-              - raceStatus
-              - toteRaceType
-              - runners
-            properties:
-              id:
-                type: integer
-                example: 1
-              distance:
-                type: string
-                example: "3590"
-              distanceText:
-                type: string
-                example: "2m 70yds"
-              distanceUnit:
-                type: string
-                example: "Yards"
-              enabled:
-                type: boolean
-                example: true
-              numPositions:
-                type: integer
-                example: 3
-              name:
-                type: string
-                example: "Watch Racing TV Now Novices' Hur"
-              postTime:
-                type: string
-                example: "15:15:00+02:00"
-              raceType:
-                $ref: "#/components/schemas/RaceType"
-              toteRaceType:
-                $ref: "#/components/schemas/ToteRaceType"
-              runners:
-                type: array
-                items:
-                  type: object
-                  required:
-                    - id
-                    - name
-                    - jockeyName
-                    - position
-                    - scratched
-                    - weightCarried
-                    - morningLineOdds
-                  properties:
-                    id:
-                      type: integer
-                      example: 1
-                    name:
-                      type: string
-                      example: "Santani"
-                    jockeyName:
-                      type: string
-                      example: "B Poste"
-                    position:
-                      type: integer
-                      example: 1
-                    scratched:
-                      type: boolean
-                      example: false
-                    weightCarried:
-                      type: integer
-                      example: 155
-                    morningLineOdds:
-                      type: string
-                      example: "11/4"
+            $ref: "#/components/schemas/Race"
     Pool:
       type: object
       required:
@@ -2491,6 +2475,98 @@ components:
               longName:
                 type: string
                 example: "WIN"
+    Race:
+      type: object
+      required:
+        - id
+        - distanceText
+        - enabled
+        - handicap
+        - numPositions
+        - name
+        - postTime
+        - cardId
+        - raceType
+        - raceStatus
+        - toteRaceType
+        - runners
+      properties:
+        id:
+          type: integer
+          example: 1
+        course:
+          type: string
+          example: "T"
+        distance:
+          type: string
+          example: "3590"
+        distanceText:
+          type: string
+          example: "2m 70yds"
+        distanceUnit:
+          type: string
+          example: "Yards"
+        enabled:
+          type: boolean
+          example: true
+        handicap:
+          type: boolean
+          example: false
+        numPositions:
+          type: integer
+          example: 3
+        name:
+          type: string
+          example: "Watch Racing TV Now Novices' Hur"
+        postTime:
+          type: string
+          example: "15:15:00+02:00"
+        cardId:
+          type: integer
+          example: 27
+        raceType:
+          $ref: "#/components/schemas/RaceType"
+        toteRaceType:
+          $ref: "#/components/schemas/ToteRaceType"
+        runners:
+          type: array
+          items:
+            $ref: "#/components/schemas/Runner"
+    Runner:
+      type: object
+      required:
+        - id
+        - name
+        - jockeyName
+        - position
+        - scratched
+        - weightCarried
+        - morningLineOdds
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Santani"
+        jockeyName:
+          type: string
+          example: "B Poste"
+        position:
+          type: integer
+          example: 1
+        trainer:
+          type: string
+          example: "Pam Sly"
+        scratched:
+          type: boolean
+          example: false
+        weightCarried:
+          type: integer
+          example: 155
+        morningLineOdds:
+          type: string
+          example: "11/4"
     CardType:
       type: object
       required:
