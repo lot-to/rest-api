@@ -1384,7 +1384,103 @@ components:
           example: "ERR2101" 
         error:
           type: string
-          example: "There might already be a user registered on the same address."          
+          example: "There might already be a user registered on the same address."
+    UserWarning:
+      type: object
+      required:
+        - code
+        - error
+      properties:
+        code:
+          type: string
+          example: "ERR2102" 
+        error:
+          type: string
+          example: "A user with the same name already exists."
+    SystemException:
+      type: object
+      required:
+        - code
+        - error
+      properties:
+        code:
+          type: string
+          example: "SYS1000" 
+        error:
+          type: string
+          example: "A system error occurred. Please contact an administrator."
+    InvalidToken:
+      type: object
+      required:
+        - code
+        - error
+      properties:
+        code:
+          type: string
+          example: "SYS2000" 
+        error:
+          type: string
+          example: "Invalid token"
+    LoginTimeout:
+      type: object
+      required:
+        - code
+        - error
+      properties:
+        code:
+          type: string
+          example: "SYS3000" 
+        error:
+          type: string
+          example: "Too many failed login attempts"
+    GenericErrorCode:
+      type: object
+      required:
+        - code
+        - error
+      properties:
+        code:
+          type: string
+          example: "SYS9999" 
+        error:
+          type: string
+          example: "Missing or invalid field specified"
+    UserExcluded:
+      type: object
+      required:
+        - code
+        - error
+      properties:
+        code:
+          type: string
+          example: "ERR3000" 
+        error:
+          type: string
+          example: "This user has been excluded" 
+    EmailNotFound:
+      type: object
+      required:
+        - code
+        - error
+      properties:
+        code:
+          type: string
+          example: "ERR3100" 
+        error:
+          type: string
+          example: "Email specified does not exist"
+    TooManyLoginFails:
+      type: object
+      required:
+        - code
+        - error
+      properties:
+        code:
+          type: string
+          example: "ERR3100" 
+        error:
+          type: string
+          example: "Too many failed login attempts"             
     Event:
       type: object
       required:
