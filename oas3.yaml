@@ -643,6 +643,20 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/LoginError"
+            encoding:
+              headers:
+                X-Rate-Limit-Limit:
+                  description: The number of allowed requests in the current period
+                  schema:
+                    type: integer
+                X-Rate-Limit-Remaining:
+                  description: The number of allowed requests remaining
+                  schema:
+                    type: integer
+                X-Rate-Limit-Reset: 
+                  description: Timestamp of when the rate limit resets 
+                  schema:
+                    type: string
   /user/auth/token:
     post:
       tags:
