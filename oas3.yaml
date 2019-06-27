@@ -708,7 +708,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: "#/components/schemas/RegistrationError"
     get:
       tags:
         - Users
@@ -1058,6 +1058,37 @@ components:
               code:
                 type: string
                 example: "ERR1000"
+    RegistrationError:
+      oneOf:
+        - $ref: "#/components/schemas/AddressWarning"
+        - $ref: "#/components/schemas/AgeNotMet"
+        - $ref: "#/components/schemas/CountryNotFound"
+        - $ref: "#/components/schemas/DuplicateEmail"
+        - $ref: "#/components/schemas/DuplicateUsername"
+        - $ref: "#/components/schemas/GenericErrorCode"
+        - $ref: "#/components/schemas/InvalidEmail"
+        - $ref: "#/components/schemas/InvalidDOBFormat"
+        - $ref: "#/components/schemas/InvalidDOB"
+        - $ref: "#/components/schemas/InvalidRequest"
+        - $ref: "#/components/schemas/InvalidCountryIso"
+        - $ref: "#/components/schemas/InvalidFirstname"
+        - $ref: "#/components/schemas/InvalidLastname"
+        - $ref: "#/components/schemas/InvalidToken"
+        - $ref: "#/components/schemas/MissingPassword"
+        - $ref: "#/components/schemas/MissingFirstname"
+        - $ref: "#/components/schemas/MissingLastname"
+        - $ref: "#/components/schemas/MissingDOB"
+        - $ref: "#/components/schemas/MissingLine1"
+        - $ref: "#/components/schemas/MissingCity"
+        - $ref: "#/components/schemas/MissingPostcode"
+        - $ref: "#/components/schemas/MissingCountryIso"
+        - $ref: "#/components/schemas/MissingPhoneNumber"
+        - $ref: "#/components/schemas/MissingSecurityQuestion"
+        - $ref: "#/components/schemas/MissingSecurityAnswer"
+        - $ref: "#/components/schemas/PasswordComplexity"
+        - $ref: "#/components/schemas/SystemException"
+        - $ref: "#/components/schemas/UserWarning"
+               
     MissingEmail:
       type: object
       required:
