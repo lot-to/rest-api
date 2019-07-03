@@ -2612,7 +2612,6 @@ components:
         - position
         - scratched
         - weightCarried
-        - morningLineOdds
       properties:
         id:
           type: integer
@@ -2638,6 +2637,27 @@ components:
         morningLineOdds:
           type: string
           example: "11/4"
+        showPrice:
+          type: string
+          example: "18/1"
+        horseAge:
+          type: integer
+          example: 5
+        rpRating:
+          type: integer
+          example: 63
+        topSpeed:
+          type: boolean
+          example: true 
+        formFigures:
+          type: string 
+          example: "5F-074"
+        officialRating:
+          type: string
+          example: 94 
+        jockeySilk:
+          type: string
+          example: "213809.gif"
     CardType:
       type: object
       required:
