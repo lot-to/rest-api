@@ -879,6 +879,28 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  
+  /tote/test/cards:
+    get:
+      tags:
+        - Cards
+      description: "Return a static list of cards. IDs: 53, 56"
+      operationId: getStaticCards
+      responses:
+        200:
+          description: Return an array of card objects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Card"
+        400:
+          description: Standardised error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
                 
 servers:
   - url: https://api.endpoints.gc-lotto-dev.cloud.goog/
