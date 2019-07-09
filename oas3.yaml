@@ -946,6 +946,8 @@ paths:
           content:
             application/json:
               schema:
+              type: array
+              items:
                 $ref: "#/components/schemas/Ticket"
         400:
           description: Standardised error response
