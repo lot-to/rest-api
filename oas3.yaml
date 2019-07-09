@@ -934,7 +934,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
   /tote/tickets:
-    post:
+    get:
       tags:
         - Tote
         - Tickets 
