@@ -760,7 +760,7 @@ paths:
         - Bets
         - Tote
         - Tickets 
-      description: Places a set of bets on a ticket 
+      description: Places each bet that is on the ticket
       operationId: PostTicket
       responses:
         200:
