@@ -933,6 +933,34 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  /tote/tickets:
+    post:
+      tags:
+        - Tote
+        - Tickets 
+      description: Returns current users tickets with bets and selections attached 
+      operationId: GetTickets
+      responses:
+        200:
+          description: Returns current users tickets with bets and selections attached
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ticket"
+        400:
+          description: Standardised error response
+          content:
+            application/json:
+              schema:
+                type: array 
+                items: 
+                  $ref: "#/components/schemas/Error"
+        404:
+          description: Standardised not found response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   
   /tote/test/cards:
     get:
