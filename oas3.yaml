@@ -753,7 +753,34 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"         
     
-## Tote            
+## Tote    
+  /tote/bet:
+    post:
+      tags:
+        - Bets
+        - Tote
+        - Tickets 
+      description: Places a set of bets on a ticket 
+      operationId: PostTicket
+      responses:
+        200:
+          description: Return a single ticket object with selection IDs attached to bets
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ticket"
+        400:
+          description: Standardised error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Standardised not found response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   /tote/cards:
     get:
       tags:
@@ -867,6 +894,33 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Race"
+        400:
+          description: Standardised error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Standardised not found response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /tote/selections:
+    post:
+      tags:
+        - Selections
+        - Tote
+        - Tickets 
+      description: Returns ticket with selection Ids attached but does not place bet 
+      operationId: PostSelections
+      responses:
+        200:
+          description: Return a single ticket object with selection IDs attached to bets
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ticket"
         400:
           description: Standardised error response
           content:
@@ -2425,6 +2479,24 @@ components:
           format: int32
         status:
           type: boolean
+    Bet:
+      type: object
+      required:
+        - poolId
+        - betTypeId
+        - selection
+      properties:
+        stake:
+          type: integer
+          example: 100
+        poolId:
+          type: integer
+          example: 1
+        betTypeId:
+          type: integer
+          example: 4
+        selection:
+          type: "#/components/schemas/Selection"
     Card:
       type: object
       required:
@@ -2513,6 +2585,42 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Race"
+    CardType:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "THOROUGHBRED"
+    Leg:
+      type: object
+      required:
+        - runnerIds
+        - legId
+      properties:
+        runnerIds:
+          type: array
+          example: [1,5]
+        legId:
+          type: integer
+          example: 23
+    PerformanceType:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "MAT"
     Pool:
       type: object
       required:
@@ -2568,6 +2676,61 @@ components:
               longName:
                 type: string
                 example: "WIN"
+    PoolType:
+      type: object
+      required:
+        - id
+        - key
+        - name
+        - abbreviation
+        - numLeg
+        - numPositions
+        - maxNumPositions
+      properties:
+        id:
+          type: integer
+          example: 1
+        key:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "WIN"
+        abbreviation:
+          type: string
+          example: "WIN"
+        numLeg:
+          type: integer
+          example: 1
+        numPositions:
+          type: integer
+          example: 1
+        maxNumPositions:
+          type: integer
+    Provider:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "GBI"
+    Selection:
+      type: object
+      required:
+        - legs
+      properties:
+        id:
+          type: integer
+          example: 14
+        legs:
+          type: array
+          items: 
+            $ref: "#/components/schemas/Leg"
     Race:
       type: object
       required:
@@ -2625,6 +2788,18 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Runner"
+    RaceType:
+      type: object 
+      required:
+        - id
+        - name 
+      properties:
+        id:
+          type: integer
+          example: 1
+        name: 
+          type: string 
+          example: "Flat"
     Runner:
       type: object
       required:
@@ -2680,42 +2855,6 @@ components:
         jockeySilk:
           type: string
           example: "213809.gif"
-    CardType:
-      type: object
-      required:
-        - id
-        - name
-      properties:
-        id:
-          type: integer
-          example: 1
-        name:
-          type: string
-          example: "THOROUGHBRED"
-    PerformanceType:
-      type: object
-      required:
-        - id
-        - name
-      properties:
-        id:
-          type: integer
-          example: 1
-        name:
-          type: string
-          example: "MAT"
-    Provider:
-      type: object
-      required:
-        - id
-        - name
-      properties:
-        id:
-          type: integer
-          example: 1
-        name:
-          type: string
-          example: "GBI"
     Track:
       type: object
       required:
@@ -2740,47 +2879,20 @@ components:
         name:
           type: string
           example: "JUMP"
-    RaceType:
+    Ticket:
       type: object 
       required:
-        - id
-        - name 
+        - userId
+        - bets
       properties:
-        id:
+        totalStake:
+          type: integer
+          example: 300
+        userId:
           type: integer
           example: 1
-        name: 
-          type: string 
-          example: "Flat"
-    PoolType:
-      type: object
-      required:
-        - id
-        - key
-        - name
-        - abbreviation
-        - numLeg
-        - numPositions
-        - maxNumPositions
-      properties:
-        id:
-          type: integer
-          example: 1
-        key:
-          type: integer
-          example: 1
-        name:
-          type: string
-          example: "WIN"
-        abbreviation:
-          type: string
-          example: "WIN"
-        numLeg:
-          type: integer
-          example: 1
-        numPositions:
-          type: integer
-          example: 1
-        maxNumPositions:
-          type: integer
+        bets: 
+          type : array
+          items: 
+            $ref: "#/components/schemas/Bet"
           example: 1
