@@ -2936,15 +2936,11 @@ components:
     Ticket:
       type: object 
       required:
-        - userId
         - bets
       properties:
         totalStake:
           type: integer
           example: 300
-        userId:
-          type: integer
-          example: 1
         bets: 
           type : array
           items: 
