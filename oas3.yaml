@@ -906,7 +906,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /tote/selections:
+  /tote/selection:
     post:
       tags:
         - Selections
