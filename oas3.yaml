@@ -573,6 +573,35 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserError"
+  /user/me/notes:
+    get:
+      tags:
+        - Users
+      security:
+        - UserKeyAuth: []
+      description: Get the authenticated users notes
+      operationId: getUserNotes
+      responses:
+        200:
+          description: "A list of user notes"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Note"
+        400:
+          description: Standardised error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        401:
+          description: Unauthorised error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserError"                
   /user/password:
     put:
       tags:
@@ -2026,6 +2055,25 @@ components:
                   type: integer
                   format: int32
                   example: "9"
+    Note:
+      type: object
+      required:
+        - id
+        - text
+        - userId
+        - date
+      properties:
+        id:
+          type: integer
+          format: int32
+        text:
+          type: string
+        userId:
+          type: integer
+          format: int32
+        date:
+          type: string
+          format: date          
     Partner:
       type: object
       required:
