@@ -823,9 +823,9 @@ paths:
           content:
             application/json:
               schema:
-              type: array
-              items:
-                $ref: "#/components/schemas/Ticket"
+                type: array
+                items:
+                  $ref: "#/components/schemas/Ticket"
         400:
           description: Standardised error response
           content:
@@ -2582,7 +2582,7 @@ components:
           format: int32
         status:
           type: boolean
-    Bet:
+    ToteBet:
       type: object
       required:
         - poolId
@@ -2599,7 +2599,7 @@ components:
           type: integer
           example: 4
         selection:
-          type: "#/components/schemas/Selection"
+          $ref: "#/components/schemas/Selection"
     Card:
       type: object
       required:
@@ -2996,5 +2996,5 @@ components:
         bets: 
           type : array
           items: 
-            $ref: "#/components/schemas/Bet"
+            $ref: "#/components/schemas/ToteBet"
           example: 1
