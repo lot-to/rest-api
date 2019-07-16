@@ -810,6 +810,36 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  /tote/bet/types:
+    get:
+      tags:
+        - Tote
+        - BetTypes 
+      description: Returns a list of all bet types available
+      operationId: GetBetTypes
+      responses:
+        200:
+          description: Returns a list of all bet types available
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BetType"
+        400:
+          description: Standardised error response
+          content:
+            application/json:
+              schema:
+                type: array 
+                items: 
+                  $ref: "#/components/schemas/Error"
+        404:
+          description: Standardised not found response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   /tote/bets:
     get:
       tags:
@@ -2600,6 +2630,22 @@ components:
           example: 4
         selection:
           $ref: "#/components/schemas/Selection"
+    BetType:
+      type: object
+      required:
+        - id
+        - shortName
+        - longName
+      properties:
+        id:
+          type: integer
+          example: 1
+        shortName:
+          type: string
+          example: "EW"
+        longName :
+          type: string
+          example: "EACH WAY"
     Card:
       type: object
       required:
