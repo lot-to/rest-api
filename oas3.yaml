@@ -1057,7 +1057,7 @@ paths:
     get:
       tags:
         - Cards
-      description: "Return a static list of cards. IDs: 53, 56"
+      description: "Return a static list of cards. IDs: 83, 84"
       operationId: getStaticCards
       responses:
         200:
@@ -1078,7 +1078,7 @@ paths:
     get:
       tags:
         - Cards
-      description: "Return a static list of pools. IDs: 4849, 4850, 4851, 4852, 4853, 4854, 4855, 4856, 5085, 5086, 5087, 5088, 5089, 5090, 5091"
+      description: "Return a static list of pools. IDs: 78 through 164"
       operationId: getStaticPools
       responses:
         200:
