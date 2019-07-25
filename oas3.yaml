@@ -465,7 +465,24 @@ paths:
               $ref: '#/components/schemas/TransactionPayload'
       responses:
         200:
-          description: Created
+          description: If the authentication token is valid, the user object will be
+            returned.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionResponse"
+        400:
+          description: Standardised error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        401:
+          description: Unauthorised error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserError"
   /transaction/bet:
     post:
       tags:
@@ -480,7 +497,24 @@ paths:
               $ref: '#/components/schemas/TransactionPayload'
       responses:
         200:
-          description: Created 
+          description: If the authentication token is valid, the user object will be
+            returned.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionResponse"
+        400:
+          description: Standardised error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        401:
+          description: Unauthorised error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserError"
   /transaction/win:
     post:
       tags:
@@ -495,8 +529,88 @@ paths:
               $ref: '#/components/schemas/TransactionPayload'
       responses:
         200:
-          description: Created          
-          
+          description: If the authentication token is valid, the user object will be
+            returned.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionResponse"
+        400:
+          description: Standardised error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        401:
+          description: Unauthorised error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserError" 
+  /transaction/refund:
+    post:
+      tags:
+        - Transaction
+      description: Create a new transaction for refunds
+      operationId: postRefund
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionPayload'
+      responses:
+        200:
+          description: If the authentication token is valid, the user object will be
+            returned.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionResponse"
+        400:
+          description: Standardised error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        401:
+          description: Unauthorised error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserError"            
+  /transaction/refund:
+    post:
+      tags:
+        - Transaction
+      description: Create a new transaction for refunds
+      operationId: postRefund
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionPayload'
+      responses:
+        200:
+          description: If the authentication token is valid, the user object will be
+            returned.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionResponse"
+        400:
+          description: Standardised error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        401:
+          description: Unauthorised error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserError"             
   /translations/key:
     post:
       tags:
@@ -2608,13 +2722,50 @@ components:
           type: string
         text:
           type: string
-    TransactionPayload:
+    TransactionResponse:
       required:
         - transactionId
       type: object
       properties:
         transactionId:
+          type: string       
+    TransactionPayload:
+      required:
+        - userId
+        - amount
+        - betId
+        - typeId
+        - partnerId
+        - gatewayId
+        - reference
+        - code
+        - response 
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int32
+        amount:
+          type: float
+        betId:
+          type: integer
+          format: int32
+        typeId:
+          type: integer
+          format: int32 
+        partnerId:
+          type: integer
+          format: int32
+        gatewayId:
+          type: integer
+          format: int32
+        response:
           type: string
+        code:
+          type: string
+        reference:
+          type: string          
+          
     User:
       type: object
       required:
