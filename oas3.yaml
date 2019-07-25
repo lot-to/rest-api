@@ -451,6 +451,26 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/SportBet"
+  /transaction/id:
+    get:
+      tags:
+        - Transaction
+      parameters:
+        - name: id
+          in: query
+          description: Transaction Id
+          required: true
+          schema:
+            type: int
+      description: This returns the translation data for a particular ID
+      operationId: getTransaction
+      responses:
+        200:
+          description: The specified transaction object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Transaction"                  
   /transaction/deposit:
     post:
       tags:
