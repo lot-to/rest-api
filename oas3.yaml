@@ -451,6 +451,52 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/SportBet"
+  /transaction/deposit:
+    post:
+      tags:
+        - Transaction
+      description: Create a new transaction for deposits
+      operationId: postDeposit
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionPayload'
+      responses:
+        200:
+          description: Created
+  /transaction/bet:
+    post:
+      tags:
+        - Transaction
+      description: Create a new transaction for bets
+      operationId: postBet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionPayload'
+      responses:
+        200:
+          description: Created 
+  /transaction/win:
+    post:
+      tags:
+        - Transaction
+      description: Create a new transaction for winnings
+      operationId: postDeposit
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionPayload'
+      responses:
+        200:
+          description: Created          
+          
   /translations/key:
     post:
       tags:
@@ -2561,6 +2607,13 @@ components:
         key:
           type: string
         text:
+          type: string
+    TransactionPayload:
+      required:
+        - transactionId
+      type: object
+      properties:
+        transactionId:
           type: string
     User:
       type: object
