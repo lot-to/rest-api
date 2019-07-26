@@ -478,7 +478,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserError"                
-  /transaction/id:
+  /transaction/{id}:
     get:
       tags:
         - Transaction
@@ -632,12 +632,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserError"            
-  /transaction/refund:
+  /transaction/withdraw:
     post:
       tags:
         - Transaction
-      description: Create a new transaction for refunds
-      operationId: postRefund
+      description: Create a new transaction for a withdrawal
+      operationId: postWithdraw
       requestBody:
         required: true
         content:
