@@ -451,6 +451,33 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/SportBet"
+  /transactions:
+    get:
+      tags:
+        - Transactions
+      description: Return the transactions for an authenticated player.
+      operationId: getTransactions
+      responses:
+        200:
+          description: A list of transactions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Transaction"
+        400:
+          description: Standardised error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        401:
+          description: Unauthorised error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserError"                
   /transaction/id:
     get:
       tags:
