@@ -484,7 +484,7 @@ paths:
         - Transaction
       parameters:
         - name: id
-          in: query
+          in: path
           description: Transaction Id
           required: true
           schema:
@@ -509,7 +509,7 @@ paths:
       tags:
         - Transaction
       description: Create a new transaction for deposits
-      operationId: postDeposit
+      operationId: postTransactionDeposit
       requestBody:
         required: true
         content:
@@ -541,7 +541,7 @@ paths:
       tags:
         - Transaction
       description: Create a new transaction for bets
-      operationId: postBet
+      operationId: postTransactionBet
       requestBody:
         required: true
         content:
@@ -573,7 +573,7 @@ paths:
       tags:
         - Transaction
       description: Create a new transaction for winnings
-      operationId: postDeposit
+      operationId: postTransactionWin
       requestBody:
         required: true
         content:
