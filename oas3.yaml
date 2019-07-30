@@ -3108,6 +3108,8 @@ components:
         legId:
           type: integer
           example: 23
+        breakdowns:
+          type: array 
     PerformanceType:
       type: object
       required:
