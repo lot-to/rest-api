@@ -1211,61 +1211,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-                
-  /tote/selection:
-    post:
-      tags:
-        - Selections
-        - Tote
-        - Tickets 
-      description: Returns ticket with selection Ids attached but does not place bet 
-      operationId: PostSelections
-      responses:
-        200:
-          description: Return a single ticket object with selection IDs attached to bets
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Ticket"
-        400:
-          description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        404:
-          description: Standardised not found response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-  /tote/selection/{id}:
-    get:
-      tags:
-        - Selections
-        - Tote
-      description: Return a selection object by its given identifier
-      operationId: getSelectionById
-      responses:
-        200:
-          description: Returns a selection object
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Selection"
-        400:
-          description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        404:
-          description: Standardised not found response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-  
   /tote/test/cards:
     get:
       tags:
