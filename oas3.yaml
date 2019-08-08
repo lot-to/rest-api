@@ -2912,17 +2912,50 @@ components:
       required:
         - poolId
         - betTypeId
+        - ticketId
+        - stake
+        - selectionId
+        - lost
+        - settled
+        - dividend
+        - winAmount
+        - winTransactionId
+        - refundTransactionId
         - selection
       properties:
         stake:
           type: integer
           example: 100
+        dividend:
+          type: integer
+          example: 100
+        winAmount:
+          type: integer
+          example: 100          
         poolId:
           type: integer
           example: 1
         betTypeId:
           type: integer
           example: 4
+        selectionId:
+          type: integer
+          example: 4
+        ticketId:
+          type: integer
+          example: 4          
+        winTransactionId:
+          type: integer
+          example: 4
+        refundTransactionId:
+          type: integer
+          example: 4
+        lost:
+          type: boolean
+          example: true 
+        win:
+          type: boolean
+          example: true            
         selection:
           $ref: "#/components/schemas/Selection"
     BetType:
@@ -3331,6 +3364,7 @@ components:
     Ticket:
       type: object 
       required:
+      -
         - bets
       properties:
         totalStake:
