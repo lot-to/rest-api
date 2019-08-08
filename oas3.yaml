@@ -2953,7 +2953,7 @@ components:
         lost:
           type: boolean
           example: true 
-        win:
+        settled:
           type: boolean
           example: true            
         selection:
@@ -3088,6 +3088,34 @@ components:
           example: 23
         breakdowns:
           type: array 
+    Breakdown:
+      type: object
+      required:
+        - runnerId
+        - legId
+        - selectionId
+        - order
+        - lost 
+        - settled
+      properties:
+        legId:
+          type: integer
+          example: 2
+        runnerId:
+          type: integer
+          example: 2332
+        selectionId:
+          type: integer
+          example: 231
+        order:
+          type: integer
+          example: 23
+        lost:
+          type: boolean
+          example: true 
+        settled:
+          type: boolean
+          example: true          
     PerformanceType:
       type: object
       required:
@@ -3209,10 +3237,10 @@ components:
         key: 
           type: string
           example: "1:[1,3]-[2,3]-[2,6]"
-        legs:
+        breakdowns:
           type: array
           items: 
-            $ref: "#/components/schemas/Leg"
+            $ref: "#/components/schemas/Breakdown"
     Race:
       type: object
       required:
