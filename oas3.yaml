@@ -1010,7 +1010,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Ticket"
+                $ref: "#/components/schemas/BetslipTicket"
         400:
           description: Standardised error response
           content:
@@ -2958,6 +2958,60 @@ components:
           example: true            
         selection:
           $ref: "#/components/schemas/Selection"
+    BetslipBet:
+      type: object
+      required:
+        - poolId
+        - betTypeId
+        - stake
+        - selection
+      properties:
+        stake:
+          type: integer
+          example: 100
+        poolId:
+          type: integer
+          example: 1
+        betTypeId:
+          type: integer
+          example: 1
+        selection:
+          $ref: "#/components/schemas/BetslipSelection"
+    BetslipLeg:
+      type: object
+      required:
+        - runnerIds
+        - legId
+      properties:
+        legId:
+          type: integer
+          example: 2
+        runnerIds:
+          type: array
+          example: [782]
+    BetslipSelection:
+      type: object
+      required:
+        - legs
+      properties:
+        legs:
+          type: array
+          items: 
+            $ref: "#/components/schemas/BetslipLeg"
+    BetslipTicket:
+      type: object 
+      required:
+      -
+        - bets
+      properties:
+        totalStake:
+          type: integer
+          example: 100
+        bets: 
+          type : array
+          items: 
+            $ref: "#/components/schemas/BetslipBet"
+          example: 1
     BetType:
       type: object
       required:
@@ -2974,6 +3028,34 @@ components:
         longName :
           type: string
           example: "EACH WAY"
+    Breakdown:
+      type: object
+      required:
+        - runnerId
+        - legId
+        - selectionId
+        - order
+        - lost 
+        - settled
+      properties:
+        legId:
+          type: integer
+          example: 2
+        runnerId:
+          type: integer
+          example: 2332
+        selectionId:
+          type: integer
+          example: 231
+        order:
+          type: integer
+          example: 23
+        lost:
+          type: boolean
+          example: true 
+        settled:
+          type: boolean
+          example: true         
     Card:
       type: object
       required:
@@ -3088,34 +3170,6 @@ components:
           example: 23
         breakdowns:
           type: array 
-    Breakdown:
-      type: object
-      required:
-        - runnerId
-        - legId
-        - selectionId
-        - order
-        - lost 
-        - settled
-      properties:
-        legId:
-          type: integer
-          example: 2
-        runnerId:
-          type: integer
-          example: 2332
-        selectionId:
-          type: integer
-          example: 231
-        order:
-          type: integer
-          example: 23
-        lost:
-          type: boolean
-          example: true 
-        settled:
-          type: boolean
-          example: true          
     PerformanceType:
       type: object
       required:
