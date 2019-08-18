@@ -3083,7 +3083,6 @@ components:
     BetslipTicket:
       type: object 
       required:
-      -
         - bets
       properties:
         totalStake:
