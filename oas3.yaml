@@ -1053,6 +1053,176 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+                
+  /tote/cards:
+    get:
+      tags:
+        - Cards
+        - Tote
+      description: Return a list of cards for today
+      operationId: getCards
+      parameters:
+        - name: pageKey
+          in: query
+          description: used during paginated responses
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: maximum number of results to return
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        200:
+          description: Return an array of card objects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Card"
+        400:
+          description: Standardised error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /tote/cards/{id}:
+    get:
+      tags:
+        - Cards
+        - Tote
+      description: Return a single card specified by its identifier
+      operationId: getCardById
+      responses:
+        200:
+          description: Return a single card object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Card"
+        400:
+          description: Standardised error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Standardised not found response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+             
+  /tote/courses:
+    get:
+      tags:
+        - Courses
+        - Tote
+      description: Return a list of courses
+      operationId: getToteCourses
+      parameters:
+        - name: page
+          in: query
+          description: used during paginated responses
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: limit
+          in: query
+          description: maximum number of results to return
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        200:
+          description: Return an array of course objects
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  courses:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ToteCourse"
+        400:
+          description: Standardised error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+                
+  /tote/pools:
+    get:
+      tags:
+        - Pools
+        - Tote
+      description: |
+        Return a list of pools for today
+      operationId: getPools
+      parameters:
+        - name: pageKey
+          in: query
+          description: used during paginated responses
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: maximum number of results to return
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        200:
+          description: Returns an array of pool objectsp
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Pool"
+        400:
+          description: Standardised error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+                
+  /tote/races/{id}:
+    get:
+      tags:
+        - Races
+        - Tote
+      description: Return a race object by its given identifier
+      operationId: getRaceById
+      responses:
+        200:
+          description: Returns a race object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Race"
+        400:
+          description: Standardised error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Standardised not found response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+                
   /tote/tickets:
     get:
       tags:
@@ -1126,133 +1296,6 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
                 
-  /tote/cards:
-    get:
-      tags:
-        - Cards
-        - Tote
-      description: Return a list of cards for today
-      operationId: getCards
-      parameters:
-        - name: pageKey
-          in: query
-          description: used during paginated responses
-          required: false
-          schema:
-            type: string
-        - name: limit
-          in: query
-          description: maximum number of results to return
-          required: false
-          schema:
-            type: integer
-            format: int32
-      responses:
-        200:
-          description: Return an array of card objects
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Card"
-        400:
-          description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-  /tote/cards/{id}:
-    get:
-      tags:
-        - Cards
-        - Tote
-      description: Return a single card specified by its identifier
-      operationId: getCardById
-      responses:
-        200:
-          description: Return a single card object
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Card"
-        400:
-          description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        404:
-          description: Standardised not found response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-                
-  /tote/pools:
-    get:
-      tags:
-        - Pools
-        - Tote
-      description: |
-        Return a list of pools for today
-      operationId: getPools
-      parameters:
-        - name: pageKey
-          in: query
-          description: used during paginated responses
-          required: false
-          schema:
-            type: string
-        - name: limit
-          in: query
-          description: maximum number of results to return
-          required: false
-          schema:
-            type: integer
-            format: int32
-      responses:
-        200:
-          description: Returns an array of pool objectsp
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Pool"
-        400:
-          description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-                
-  /tote/races/{id}:
-    get:
-      tags:
-        - Races
-        - Tote
-      description: Return a race object by its given identifier
-      operationId: getRaceById
-      responses:
-        200:
-          description: Returns a race object
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Race"
-        400:
-          description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        404:
-          description: Standardised not found response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
   /tote/test/cards:
     get:
       tags:
@@ -3078,16 +3121,10 @@ components:
         - raceCount
         - postTime
         - name
-        - future
         - maxRunner
-        - cardStartDate
         - countryCode
-        - description
-        - loadCode
-        - updatedDate
-        - currentRaceId
-        - eventCode
-        - eventDate
+        - courseId
+        - extraData
         - cardType
         - performanceType
         - provider
@@ -3112,47 +3149,21 @@ components:
         name:
           type: string
           example: "STRATFORD"
-        future:
-          type: boolean
-          example: true
         maxRunner:
           type: integer
           example: 24
-        cardStartDate:
-          type: string
-          example: "2019-06-17"
         countryCode:
           type: string
           example: "RP"
-        description:
-          type: string
-          example: "STRATFORD(RP):STRATFORD - 14:15"
-        loadCode:
-          type: string
-          example: "STRATFORD"
-        meetingCodeUK:
-          type: string
-          example: "generic_67"
-        updatedDate:
-          type: string
-          example: "2019-06-14 13:53:38"
-        currentRaceId:
+        courseId:
           type: integer
-          example: 5
-        eventCode:
-          type: string
-          example: "STD"
-        eventDate:
-          type: string
-          example: "2019-06-10 00:00:00"
+          example: 1
         cardType:
           $ref: "#/components/schemas/CardType"
         performanceType:
           $ref: "#/components/schemas/PerformanceType"
         provider:
           $ref: "#/components/schemas/Provider"
-        track:
-          $ref: "#/components/schemas/Track"
         races:
           type: array
           items:
@@ -3432,7 +3443,7 @@ components:
         jockeySilk:
           type: string
           example: "213809.gif"
-    Track:
+    ToteTrack:
       type: object
       required:
         - id
@@ -3444,6 +3455,36 @@ components:
         name:
           type: string
           example: "GBI"
+    ToteCourse:
+      type: object
+      required:
+        - id
+        - code
+        - key
+        - name
+        - type
+        - countryCode
+      properties:
+        id:
+          type: integer
+          example: 1
+        code:
+          type: string
+          example: "Dusseldorf"
+        key:
+          type: string
+          example: "RP-240"
+        name:
+          type: string
+          example: "DUSSELDORF"
+        type:
+          type: string
+          example: "B"
+        countryCode:
+          type: string
+          example: "GB"
+        track:
+          $ref: "#/components/schemas/ToteTrack"
     ToteRaceType:
       type: object
       required:
