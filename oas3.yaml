@@ -1103,7 +1103,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Card"
+                type: object
+                properties:
+                  card:
+                    $ref: "#/components/schemas/Card"
         400:
           description: Standardised error response
           content:
@@ -1151,6 +1154,29 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/ToteCourse"
+        400:
+          description: Standardised error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /tote/courses/{id}:
+    get:
+      tags:
+        - Courses
+        - Tote
+      description: Return a single course by its ID
+      operationId: getToteCourseById
+      responses:
+        200:
+          description: Return the single course specified by its ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  course:
+                    $ref: "#/components/schemas/ToteCourse"
         400:
           description: Standardised error response
           content:
