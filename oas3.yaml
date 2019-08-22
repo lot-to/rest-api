@@ -115,6 +115,60 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  /kyc/results:
+    get:
+      tags:
+        - Kyc
+      security:
+        - UserKeyAuth: []        
+      description: Check outcome of the kyc verification
+      operationId: getResults
+      responses:
+        200:
+          description: Return boolean of the results outcome
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: "#/components/schemas/KycResponse"
+        400:
+          description: Standardised error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error" 
+  /kyc/upload:
+    post:
+      tags:
+        - Kyc
+      security:
+        - UserKeyAuth: []
+      description: Upload documents for verification 
+      operationId: postUpload
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              items:
+                $ref: "#/components/schemas/KycUpload"
+      responses:
+        200:
+          description: Return boolean of the results outcome
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: "#/components/schemas/KycResponse"
+        400:
+          description: Standardised error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"                   
   /lotteries/{id}:
     get:
       tags:
@@ -1830,6 +1884,21 @@ components:
         error:
           type: string
           example: "Invalid request"
+    KycResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: "false" 
+    KycUpload:
+      type: object
+      properties:
+        source:
+          type: integer
+          format: int32          
+          example: "3"
+        files:
+          type: object
     DuplicateEmail:
       type: object
       required:
