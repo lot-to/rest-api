@@ -563,7 +563,7 @@ paths:
       tags:
         - Transaction
       description: Create a new transaction for deposits
-      operationId: postTransactionDeposit
+      operationId: postDeposit
       requestBody:
         required: true
         content:
@@ -595,7 +595,7 @@ paths:
       tags:
         - Transaction
       description: Create a new transaction for bets
-      operationId: postTransactionBet
+      operationId: postBet
       requestBody:
         required: true
         content:
@@ -622,12 +622,44 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserError"
+  /transaction/spend:
+    post:
+      tags:
+        - Transaction
+      description: Create a new transaction for bets
+      operationId: postSpend
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionPayload'
+      responses:
+        200:
+          description: If the authentication token is valid, the user object will be
+            returned.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionResponse"
+        400:
+          description: Standardised error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        401:
+          description: Unauthorised error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserError"                
   /transaction/win:
     post:
       tags:
         - Transaction
       description: Create a new transaction for winnings
-      operationId: postTransactionWin
+      operationId: postWin
       requestBody:
         required: true
         content:
