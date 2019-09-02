@@ -2985,20 +2985,26 @@ components:
         userId:
           type: integer
           format: int32
+          example: 580269
         amount:
           type: float
+          example: 1000
         betId:
           type: integer
           format: int32
+          example: 11657
         typeId:
           type: integer
-          format: int32 
+          format: int32
+          example: 21
         partnerId:
           type: integer
           format: int32
+          example: 23
         gatewayId:
           type: integer
           format: int32
+          example: 1
         response:
           type: string
         code:
