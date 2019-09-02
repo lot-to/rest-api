@@ -3007,10 +3007,13 @@ components:
           example: 1
         response:
           type: string
+          example: "Liability EUR 21.74 is over Customer Bet liability limit EUR 20 on Customer level, Selection: uof:3/sr:sport:2/223/1714?hcp=-10.5, Match: 18927858"
         code:
           type: string
+          example: "MTS-Reject_684"
         reference:
-          type: string          
+          type: string
+          example: "Sportsbook-Refund_1"
           
     User:
       type: object
