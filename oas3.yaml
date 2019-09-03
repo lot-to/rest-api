@@ -569,7 +569,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TransactionPayload'
+              $ref: '#/components/schemas/DepositTransaction'
       responses:
         200:
           description: If the authentication token is valid, the user object will be
@@ -601,7 +601,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TransactionPayload'
+              $ref: '#/components/schemas/BetTransaction'
       responses:
         200:
           description: If the authentication token is valid, the user object will be
@@ -633,7 +633,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TransactionPayload'
+              $ref: '#/components/schemas/BetTransaction'
       responses:
         200:
           description: If the authentication token is valid, the user object will be
@@ -665,7 +665,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TransactionPayload'
+              $ref: '#/components/schemas/WinTransaction'
       responses:
         200:
           description: If the authentication token is valid, the user object will be
@@ -697,7 +697,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TransactionPayload'
+              $ref: '#/components/schemas/RefundTransaction'
       responses:
         200:
           description: If the authentication token is valid, the user object will be
@@ -729,7 +729,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TransactionPayload'
+              $ref: '#/components/schemas/BetTransaction'
       responses:
         200:
           description: If the authentication token is valid, the user object will be
@@ -2969,7 +2969,75 @@ components:
       properties:
         transactionId:
           type: string       
-    TransactionPayload:
+    BetTransaction:
+      required:
+        - userId
+        - amount
+        - typeId
+        - partnerId
+        - gatewayId
+        - reference
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int32
+          example: 580269
+        amount:
+          type: float
+          example: 1000
+        typeId:
+          type: integer
+          format: int32
+          example: 21
+        partnerId:
+          type: integer
+          format: int32
+          example: 23
+        gatewayId:
+          type: integer
+          format: int32
+          example: 1
+        reference:
+          type: string
+          example: "Betslip-u"
+    DepositTransaction:
+      required:
+        - userId
+        - amount
+        - typeId
+        - partnerId
+        - gatewayId
+        - reference
+        - code
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int32
+          example: 580269
+        amount:
+          type: float
+          example: 1000
+        typeId:
+          type: integer
+          format: int32
+          example: 21
+        partnerId:
+          type: integer
+          format: int32
+          example: 23
+        gatewayId:
+          type: integer
+          format: int32
+          example: 1
+        code:
+          type: string
+          example: "Cash"
+        reference:
+          type: string
+          example: "Add-Funds"
+    RefundTransaction:
       required:
         - userId
         - amount
@@ -2979,7 +3047,7 @@ components:
         - gatewayId
         - reference
         - code
-        - response 
+        - reason 
       type: object
       properties:
         userId:
@@ -3005,7 +3073,7 @@ components:
           type: integer
           format: int32
           example: 1
-        response:
+        reason:
           type: string
           example: "Liability EUR 21.74 is over Customer Bet liability limit EUR 20 on Customer level, Selection: uof:3/sr:sport:2/223/1714?hcp=-10.5, Match: 18927858"
         code:
@@ -3014,6 +3082,43 @@ components:
         reference:
           type: string
           example: "Sportsbook-Refund_1"
+    WinTransaction:
+      required:
+        - userId
+        - amount
+        - betId
+        - typeId
+        - partnerId
+        - gatewayId
+        - reference
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int32
+          example: 580269
+        amount:
+          type: float
+          example: 1000
+        betId:
+          type: integer
+          format: int32
+          example: 11657
+        typeId:
+          type: integer
+          format: int32
+          example: 21
+        partnerId:
+          type: integer
+          format: int32
+          example: 23
+        gatewayId:
+          type: integer
+          format: int32
+          example: 1
+        reference:
+          type: string
+          example: "Sportsbook-Win_1"           
           
     User:
       type: object
