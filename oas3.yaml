@@ -3174,6 +3174,7 @@ components:
       required:
         - runnerIds
         - legId
+        - runners
       properties:
         legId:
           type: integer
@@ -3181,6 +3182,22 @@ components:
         runnerIds:
           type: array
           example: [782]
+        runners:
+          type: array
+          items:
+            $ref: "#/components/schemas/BetslipRunner"
+    BetslipRunner:
+      type: object
+      required:
+        - runnerId
+        - position
+      properties:
+        runnerId:
+          type: integer
+          example: 24543
+        position:
+          type: integer
+          example: 1
     BetslipSelection:
       type: object
       required:
