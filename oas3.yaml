@@ -1139,6 +1139,33 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  /tote/bets/{id}:
+    get:
+      tags:
+        - Bets
+        - Tote
+        - Tickets 
+      description: Get a single bet by its LOTTO ID. This endpoint can be used to return an individual Tote TSN.
+      operationId: GetToteBetById
+      responses:
+        200:
+          description: Return a single bet object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ToteBet"
+        400:
+          description: Standardised error response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Standardised not found response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
                 
   /tote/cards:
     get:
@@ -3250,6 +3277,9 @@ components:
           type: number
           format: float
           null: true
+        tsn:
+          type: string
+          example: "CC05BE1B8C4E"
         winAmount:
           type: integer
           example: 0
