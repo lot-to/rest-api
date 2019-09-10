@@ -1,3820 +1,3988 @@
-openapi: 3.0.0
+swagger: '2.0'
 info:
   version: 1.0.0
   title: Lot.to - REST API v1
   description: RESTful API for the Lot.to platform.
-  termsOfService: http://swagger.io/terms/
   contact:
-    name: Lot.to
     email: support@lot.to
-    url: https://lot.to
-  license:
-    name: MIT
-    url: http://github.com/gruntjs/grunt/blob/master/LICENSE-MIT
-host: api.dev.lot.to
+    name: Lot.to
+    url: 'https://lot.to'
 x-google-endpoints:
   - name: api.endpoints.gc-lotto-dev.cloud.goog
     target: 35.246.102.178
     allowCors: true
+host: api.endpoints.gc-lotto-dev.cloud.goog
+basePath: /
+securityDefinitions:
+  apiKey:
+    type: apiKey
+    description: >-
+      Authorisation key required on every request. Used to ensure all requests
+      are filtered down on a per-partner level.
+    name: apiKey
+    in: query
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
 paths:
   /games:
     get:
-      tags:
-        - Lotteries
       description: |
         Return a list of lottery games enabled for the active partner
-      operationId: getGames
+      summary: Get games list
+      tags:
+        - Lotteries
+      operationId: GamesGet
+      deprecated: false
+      produces:
+        - application/json
       parameters:
         - name: pageKey
           in: query
-          description: used during paginated responses
           required: false
-          schema:
-            type: string
+          type: string
+          description: used during paginated responses
         - name: limit
           in: query
-          description: maximum number of results to return
           required: false
-          schema:
-            type: integer
-            format: int32
+          type: integer
+          format: int32
+          description: maximum number of results to return
       responses:
-        200:
+        '200':
           description: Returns an array of game objects
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Game"
-        400:
-          description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-  /games/{id}:
-    get:
-      tags:
-        - Lotteries
-      description: Returns a single lottery game by ID
-      operationId: getGameById
-      parameters:
-        - name: id
-          in: path
-          description: game engine to return
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        200:
-          description: Returns a single game engine object
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Game"
-        400:
-          description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-  /lotteries:
-    get:
-      tags:
-        - Lotteries
-      description: Return a list of all available lotteries
-      operationId: getLotteries
-      parameters:
-        - name: pageKey
-          in: query
-          description: used during paginated responses
-          required: false
-          schema:
-            type: string
-        - name: limit
-          in: query
-          description: maximum number of results to return
-          required: false
-          schema:
-            type: integer
-            format: int32
-      responses:
-        200:
-          description: Return an array of lottery objects
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Lottery"
-        400:
-          description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-  /kyc/results:
-    get:
-      tags:
-        - Kyc
-      security:
-        - UserKeyAuth: []        
-      description: Check outcome of the kyc verification
-      operationId: getResults
-      responses:
-        200:
-          description: Return boolean of the results outcome
-          content:
-            application/json:
-              schema:
-                type: object
-                items:
-                  $ref: "#/components/schemas/KycResponse"
-        400:
-          description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error" 
-  /kyc/upload:
-    post:
-      tags:
-        - Kyc
-      security:
-        - UserKeyAuth: []
-      description: Upload documents for verification 
-      operationId: postUpload
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              items:
-                $ref: "#/components/schemas/KycUpload"
-      responses:
-        200:
-          description: Return boolean of the results outcome
-          content:
-            application/json:
-              schema:
-                type: object
-                items:
-                  $ref: "#/components/schemas/KycResponse"
-        400:
-          description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"                   
-  /lotteries/{id}:
-    get:
-      tags:
-        - Lotteries
-      description: Return a single lottery by ID
-      operationId: getLotteryById
-      parameters:
-        - name: id
-          in: path
-          description: lottery to return
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        200:
-          description: Lottery to return
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Lottery"
-        400:
-          description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-  /lotteries/{id}/draws:
-    get:
-      tags:
-        - Lotteries
-      description: Return all draws for a given lottery
-      operationId: getLotteryDrawsById
-      parameters:
-        - name: id
-          in: path
-          description: lottery to return
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        200:
-          description: Array containing our lottery draws
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Draw"
-        400:
-          description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-  /lotteries/{id}/draw/{drawId}:
-    get:
-      tags:
-        - Lotteries
-      description: Return a single lottery draw by drawID
-      operationId: getLotteryDrawById
-      parameters:
-        - name: id
-          in: path
-          description: lottery to return
-          required: true
-          schema:
-            type: integer
-            format: int32
-        - name: drawId
-          in: path
-          description: draw to return
-          required: true
-          schema:
-            type: integer
-            format: int32
-      responses:
-        200:
-          description: Returns a single lottery draw
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Draw"
-        400:
-          description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-  /sports:
-    get:
-      tags:
-        - Sports
-      description: Return the list of active sports
-      operationId: getSports
-      responses:
-        200:
-          description: An array of sport data
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Sport"
-  /sports/{id}:
-    get:
-      tags:
-        - Sports
-      description: Return a sport object by its ID
-      operationId: getSportById
-      parameters:
-        - name: id
-          in: path
-          description: Unique sport ID
-          required: true
-          schema:
-            type: integer
-            format: int32
-      responses:
-        200:
-          description: Sport object matching the ID parameter
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Sport"
-  /sports/{id}/events:
-    get:
-      tags:
-        - Sports
-      description: Return a list of events for the matching sport object grouped by live
-        and upcoming
-      operationId: getEventsBySportId
-      parameters:
-        - name: id
-          in: path
-          description: Unique sport ID
-          required: true
-          schema:
-            type: integer
-            format: int32
-      responses:
-        200:
-          description: "Sport events sorted into: live, upcoming"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SportEvents"
-  /sports/{id}/events/live:
-    get:
-      tags:
-        - Sports
-      description: Return a list of live events for the given sport ID
-      operationId: getLiveEventsBySportId
-      parameters:
-        - name: id
-          in: path
-          description: Unique sport ID
-          required: true
-          schema:
-            type: integer
-            format: int32
-      responses:
-        200:
-          description: "A list of live sport events"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Event"
-  /sports/{id}/events/category/{categoryId}:
-    get:
-      tags:
-        - Sports
-      description: Return a list of events for the matching sport category grouped by live
-        and upcoming
-      operationId: getEventsBySportCategoryId
-      parameters:
-        - name: id
-          in: path
-          description: Unique sport ID
-          required: true
-          schema:
-            type: integer
-            format: int32
-        - name: categoryId
-          in: path
-          description: Category ID belonging to the sport ID
-          required: true
-          schema:
-            type: integer
-            format: int32
-      responses:
-        200:
-          description: "Sport events sorted into: live, upcoming"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SportEvents"
-  /sports/{id}/events/tournament/{tournamentId}:
-    get:
-      tags:
-        - Sports
-      description: Return a list of events for the matching sport tournament grouped by
-        live and upcoming
-      operationId: getEventsBySportTournamentId
-      parameters:
-        - name: id
-          in: path
-          description: Unique sport ID
-          required: true
-          schema:
-            type: integer
-            format: int32
-        - name: tournamentId
-          in: path
-          description: Tournament ID belonging to the sport ID
-          required: true
-          schema:
-            type: integer
-            format: int32
-      responses:
-        200:
-          description: "Sport events sorted into: live, upcoming"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SportEvents"
-  /sports/events/upcoming:
-    get:
-      tags:
-        - Sports
-      description: Return a list of all upcoming events (for all active sports)
-      operationId: getUpcomingEvents
-      responses:
-        200:
-          description: Sport events array containing only the upcoming event list
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Event"
-  /sports/events/live:
-    get:
-      tags:
-        - Sports
-      description: Return a list of all live events (for all active sports)
-      operationId: getLiveEVents
-      responses:
-        200:
-          description: Sport events array containing only the live event list
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Event"
-  /sports/events/{id}:
-    get:
-      tags:
-        - Sports
-      description: Return a single event by its ID. This call includes all the available
-        markets for the single event
-      operationId: getEventById
-      parameters:
-        - name: id
-          in: path
-          description: Unique event ID
-          required: true
-          schema:
-            type: integer
-            format: int32
-      responses:
-        200:
-          description: Sport event object containing full market list
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Event"
-  /sports/status:
-    get:
-      tags:
-        - Sports
-      description: Used to check the availability of pre-match and live odds. This request
-        should be made at a fixed interval (~10s) in order to disable markets on
-        the FE should either of the odds providers become unavailable
-      operationId: getSportStatus
-      responses:
-        200:
-          description: A list of sport odds provider and their status
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SportStatus"
-  /sports/bet:
-    post:
-      tags:
-        - Sports
-      security:
-        - UserKeyAuth: []
-      description: Submit the bets for a player
-      operationId: postSportBets
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              multiples:
-                type: array
-                $ref: "#/components/schemas/SportBet"
-              singles:
-                type: array
-                $ref: "#/components/schemas/SportBet"
-      responses:
-        201:
-          description: Created
-  /sports/bets:
-    get:
-      tags:
-        - Sports
-      security:
-        - UserKeyAuth: []
-      description: Return the bets for an authenticated player.
-      operationId: getSportBets
-      responses:
-        200:
-          description: A list of sport bets
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/SportBet"
-  /transactions:
-    get:
-      tags:
-        - Transactions
-      description: Return the transactions for an authenticated player.
-      operationId: getTransactions
-      responses:
-        200:
-          description: A list of transactions
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Transaction"
-        400:
-          description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        401:
-          description: Unauthorised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/UserError"                
-  /transaction/{id}:
-    get:
-      tags:
-        - Transaction
-      parameters:
-        - name: id
-          in: path
-          description: Transaction Id
-          required: true
-          schema:
-            type: int
-      description: This returns the translation data for a particular ID
-      operationId: getTransaction
-      responses:
-        200:
-          description: The specified transaction object
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Transaction"
-        400:
-          description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-  /transaction/credit:
-    post:
-      tags:
-        - Transaction
-      description: Create a new transaction for deposits
-      operationId: postDeposit
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DepositTransaction'
-      responses:
-        200:
-          description: If the authentication token is valid, the user object will be
-            returned.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TransactionResponse"
-        400:
-          description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        401:
-          description: Unauthorised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/UserError"
-  /transaction/bet:
-    post:
-      tags:
-        - Transaction
-      description: Create a new transaction for bets
-      operationId: postBet
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/BetTransaction'
-      responses:
-        200:
-          description: If the authentication token is valid, the user object will be
-            returned.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TransactionResponse"
-        400:
-          description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        401:
-          description: Unauthorised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/UserError"
-  /transaction/debit:
-    post:
-      tags:
-        - Transaction
-      description: Create a new transaction for bets
-      operationId: postSpend
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/BetTransaction'
-      responses:
-        200:
-          description: If the authentication token is valid, the user object will be
-            returned.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TransactionResponse"
-        400:
-          description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        401:
-          description: Unauthorised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/UserError"                
-  /transaction/win:
-    post:
-      tags:
-        - Transaction
-      description: Create a new transaction for winnings
-      operationId: postWin
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/WinTransaction'
-      responses:
-        200:
-          description: If the authentication token is valid, the user object will be
-            returned.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TransactionResponse"
-        400:
-          description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        401:
-          description: Unauthorised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/UserError" 
-  /transaction/refund:
-    post:
-      tags:
-        - Transaction
-      description: Create a new transaction for refunds
-      operationId: postRefund
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/RefundTransaction'
-      responses:
-        200:
-          description: If the authentication token is valid, the user object will be
-            returned.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TransactionResponse"
-        400:
-          description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        401:
-          description: Unauthorised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/UserError"            
-  /transaction/withdraw:
-    post:
-      tags:
-        - Transaction
-      description: Create a new transaction for a withdrawal
-      operationId: postWithdraw
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/BetTransaction'
-      responses:
-        200:
-          description: If the authentication token is valid, the user object will be
-            returned.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TransactionResponse"
-        400:
-          description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        401:
-          description: Unauthorised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/UserError"             
-  /translations/key:
-    post:
-      tags:
-        - Translations
-      description: Create a new key into the translations system with a default value.
-      operationId: postTranslationByKey
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TranslationPayload'
-      responses:
-        201:
-          description: Created
-    get:
-      tags:
-        - Translations
-      parameters:
-        - name: q
-          in: query
-          description: Translation key
-          required: true
-          schema:
-            type: string
-        - name: language
-          in: query
-          description: Language ISO code
-          schema:
-            type: string
-      description: This returns the translation data for a single key from an optional language parameter. If no language is specified, it will default to your partner-level configuration.
-      operationId: getTranslationByKey
-      responses:
-        200:
-          description: The specified translation object
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Translation"
-  /translations/list:
-    get:
-      tags:
-        - Translations
-      parameters:
-        - name: "q[]"
-          in: query
-          description: Array of translation keys
-          required: true
           schema:
             type: array
             items:
-              type: string
-        - name: language
-          in: query
-          description: Language ISO code
+              $ref: '#/definitions/Game'
+          headers: {}
+        '400':
+          description: Standardised error response
           schema:
-            type: string
-      description: This returns an array of translation objects for a list of keys. If no language is specified, it will default to your partner-level configuration.
-      operationId: getTranslationList
-      responses:
-        200:
-          description: A data array of requested translations and an additional warnings array containing any keys that could not be found.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TranslationList"
-  /user/me:
+            $ref: '#/definitions/Error'
+  '/games/{id}':
     get:
+      description: Returns a single lottery game by ID
+      summary: Get a game by its ID
       tags:
-        - Users
-      security:
-        - UserKeyAuth: []
-      description: Get the authenticated users account details
-      operationId: getCurrentUser
-      responses:
-        200:
-          description: If the authentication token is valid, the user object will be
-            returned.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/User"
-        400:
-          description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        401:
-          description: Unauthorised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/UserError"
-  /user/me/balance:
-    get:
-      tags:
-        - Users
-      security:
-        - UserKeyAuth: []
-      description: Get the authenticated users account balance
-      operationId: getAuthUserBalance
-      responses:
-        200:
-          description: If the authentication token is valid, the user wallet object will be
-            returned.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Wallet"
-        400:
-          description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        401:
-          description: Unauthorised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/UserError"
-  /user/me/notes:
-    get:
-      tags:
-        - Users
-      security:
-        - UserKeyAuth: []
-      description: Get the authenticated users notes
-      operationId: getUserNotes
-      responses:
-        200:
-          description: "A list of user notes"
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Note"
-        400:
-          description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        401:
-          description: Unauthorised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/UserError"                
-  /user/password:
-    put:
-      tags:
-        - Users
-      description: Update the new password for a given user from their specified reset token
-      operationId: putPasswordReset
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/ResetTokenRequest"
-      responses:
-        200:
-          description: On success, a 200 OK is issued with no content
-        400:
-          description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PasswordResetError"
-  /user/password/token:
-    post:
-      tags:
-        - Users
-      description: Create a password reset request for a specified email
-      operationId: postGenerateResetToken
+        - Lotteries
+      operationId: GamesByIdGet
+      deprecated: false
+      produces:
+        - application/json
       parameters:
-        - name: "email"
+        - name: id
+          in: path
+          required: true
+          type: integer
+          format: int64
+          description: game engine to return
+      responses:
+        '200':
+          description: Returns a single game engine object
+          schema:
+            $ref: '#/definitions/Game'
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: '#/definitions/Error'
+  /lotteries:
+    get:
+      description: Return a list of all available lotteries
+      summary: Get lottery list
+      tags:
+        - Lotteries
+      operationId: LotteriesGet
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: pageKey
           in: query
-          description: Input email address
+          required: false
+          type: string
+          description: used during paginated responses
+        - name: limit
+          in: query
+          required: false
+          type: integer
+          format: int32
+          description: maximum number of results to return
+      responses:
+        '200':
+          description: Return an array of lottery objects
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Lottery'
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: '#/definitions/Error'
+  '/lotteries/{id}':
+    get:
+      description: Return a single lottery by ID
+      summary: Get a lottery by its ID
+      tags:
+        - Lotteries
+      operationId: LotteriesByIdGet
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+          format: int64
+          description: lottery to return
+      responses:
+        '200':
+          description: Lottery to return
+          schema:
+            $ref: '#/definitions/Lottery'
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: '#/definitions/Error'
+  '/lotteries/{id}/draws':
+    get:
+      description: Return all draws for a given lottery
+      summary: Get lottery draws by the lottery ID
+      tags:
+        - Lotteries
+      operationId: LotteriesDrawsByIdGet
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+          format: int64
+          description: lottery to return
+      responses:
+        '200':
+          description: Array containing our lottery draws
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Draw'
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: '#/definitions/Error'
+  '/lotteries/{id}/draw/{drawId}':
+    get:
+      description: Return a single lottery draw by drawID
+      summary: Get a lottery draw by its ID
+      tags:
+        - Lotteries
+      operationId: LotteriesDrawByIdAndDrawIdGet
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+          format: int32
+          description: lottery to return
+        - name: drawId
+          in: path
+          required: true
+          type: integer
+          format: int32
+          description: draw to return
+      responses:
+        '200':
+          description: Returns a single lottery draw
+          schema:
+            $ref: '#/definitions/Draw'
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: '#/definitions/Error'
+  /kyc/results:
+    get:
+      description: Check outcome of the kyc verification
+      summary: Get KYC results
+      tags:
+        - Kyc
+      operationId: KycResultsGet
+      deprecated: false
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        '200':
+          description: Return boolean of the results outcome
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/KycResponse'
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: '#/definitions/Error'
+  /kyc/upload:
+    post:
+      description: Upload documents for verification
+      summary: Upload KYC documents
+      tags:
+        - Kyc
+      operationId: KycUploadPost
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: ''
+          schema:
+            type: object
+      responses:
+        '200':
+          description: Return boolean of the results outcome
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/KycResponse'
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: '#/definitions/Error'
+  /sports:
+    get:
+      description: Return the list of active sports
+      summary: Get sports list
+      tags:
+        - Sports
+      operationId: SportsGet
+      deprecated: false
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        '200':
+          description: An array of sport data
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Sport'
+          headers: {}
+  '/sports/{id}':
+    get:
+      description: Return a sport object by its ID
+      summary: Get a sport by its ID
+      tags:
+        - Sports
+      operationId: SportsByIdGet
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+          format: int32
+          description: Unique sport ID
+      responses:
+        '200':
+          description: Sport object matching the ID parameter
+          schema:
+            $ref: '#/definitions/Sport'
+          headers: {}
+  '/sports/{id}/events':
+    get:
+      description: >-
+        Return a list of events for the matching sport object grouped by live
+        and upcoming
+      summary: Get all sport events for a sport ID
+      tags:
+        - Sports
+      operationId: SportsEventsByIdGet
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+          format: int32
+          description: Unique sport ID
+      responses:
+        '200':
+          description: 'Sport events sorted into: live, upcoming'
+          schema:
+            $ref: '#/definitions/SportEvents'
+          headers: {}
+  '/sports/{id}/events/live':
+    get:
+      description: Return a list of live events for the given sport ID
+      summary: Get all live sport events for a sport ID
+      tags:
+        - Sports
+      operationId: SportsEventsLiveByIdGet
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+          format: int32
+          description: Unique sport ID
+      responses:
+        '200':
+          description: A list of live sport events
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Event'
+          headers: {}
+  '/sports/{id}/events/category/{categoryId}':
+    get:
+      description: >-
+        Return a list of events for the matching sport category grouped by live
+        and upcoming
+      summary: Get all sport events for a sport and category ID
+      tags:
+        - Sports
+      operationId: SportsEventsCategoryByIdAndCategoryIdGet
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+          format: int32
+          description: Unique sport ID
+        - name: categoryId
+          in: path
+          required: true
+          type: integer
+          format: int32
+          description: Category ID belonging to the sport ID
+      responses:
+        '200':
+          description: 'Sport events sorted into: live, upcoming'
+          schema:
+            $ref: '#/definitions/SportEvents'
+          headers: {}
+  '/sports/{id}/events/tournament/{tournamentId}':
+    get:
+      description: >-
+        Return a list of events for the matching sport tournament grouped by
+        live and upcoming
+      summary: Get all sport events for a sport and tournament ID
+      tags:
+        - Sports
+      operationId: SportsEventsTournamentByIdAndTournamentIdGet
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+          format: int32
+          description: Unique sport ID
+        - name: tournamentId
+          in: path
+          required: true
+          type: integer
+          format: int32
+          description: Tournament ID belonging to the sport ID
+      responses:
+        '200':
+          description: 'Sport events sorted into: live, upcoming'
+          schema:
+            $ref: '#/definitions/SportEvents'
+          headers: {}
+  /sports/events/upcoming:
+    get:
+      description: Return a list of all upcoming events (for all active sports)
+      summary: Get all upcoming sport events
+      tags:
+        - Sports
+      operationId: SportsEventsUpcomingGet
+      deprecated: false
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        '200':
+          description: Sport events array containing only the upcoming event list
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Event'
+          headers: {}
+  /sports/events/live:
+    get:
+      description: Return a list of all live events (for all active sports)
+      summary: Get all live sport events
+      tags:
+        - Sports
+      operationId: SportsEventsLiveGet
+      deprecated: false
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        '200':
+          description: Sport events array containing only the live event list
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Event'
+          headers: {}
+  '/sports/events/{id}':
+    get:
+      description: >-
+        Return a single event by its ID. This call includes all the available
+        markets for the single event
+      summary: Get a sport event by its ID
+      tags:
+        - Sports
+      operationId: SportsEventsByIdGet2
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: integer
+          format: int32
+          description: Unique event ID
+      responses:
+        '200':
+          description: Sport event object containing full market list
+          schema:
+            $ref: '#/definitions/Event'
+          headers: {}
+  /sports/status:
+    get:
+      description: >-
+        Used to check the availability of pre-match and live odds. This request
+        should be made at a fixed interval (~10s) in order to disable markets on
+        the FE should either of the odds providers become unavailable
+      summary: Get sports status
+      tags:
+        - Sports
+      operationId: SportsStatusGet
+      deprecated: false
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        '200':
+          description: A list of sport odds provider and their status
+          schema:
+            $ref: '#/definitions/SportStatus'
+          headers: {}
+  /sports/bet:
+    post:
+      description: Submit the bets for a player
+      summary: Place a sports bet
+      tags:
+        - Sports
+      operationId: SportsBetPost
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: ''
+          schema:
+            type: object
+      responses:
+        '201':
+          description: Created
+          headers: {}
+  /sports/bets:
+    get:
+      description: Return the bets for an authenticated player.
+      summary: Get a list of sport bets
+      tags:
+        - Sports
+      operationId: SportsBetsGet
+      deprecated: false
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        '200':
+          description: A list of sport bets
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/SportBet'
+          headers: {}
+  /transactions:
+    get:
+      description: Return the transactions for an authenticated player.
+      summary: Get a list of transactions
+      tags:
+        - Transactions
+      operationId: TransactionsGet
+      deprecated: false
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        '200':
+          description: A list of transactions
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Transaction'
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: '#/definitions/Error'
+        '401':
+          description: Unauthorised error response
+          schema:
+            $ref: '#/definitions/Error'
+  '/transaction/{id}':
+    get:
+      description: This returns the translation data for a particular ID
+      summary: Get a transaction by its ID
+      tags:
+        - Transaction
+      operationId: TransactionByIdGet
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
           required: true
           type: string
+          description: Transaction Id
       responses:
-        200:
-          description: On success, the reset token is returned.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ResetToken"
-        400:
+        '200':
+          description: The specified transaction object
+          schema:
+            $ref: '#/definitions/Transaction'
+          headers: {}
+        '400':
           description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+          schema:
+            $ref: '#/definitions/Error'
+  /transaction/credit:
+    post:
+      description: Create a new transaction for deposits
+      summary: Create a credit transaction
+      tags:
+        - Transaction
+      operationId: TransactionCreditPost
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: ''
+          schema:
+            $ref: '#/definitions/TransactionPayload'
+      responses:
+        '200':
+          description: >-
+            If the authentication token is valid, the user object will be
+            returned.
+          schema:
+            $ref: '#/definitions/TransactionResponse'
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: '#/definitions/Error'
+        '401':
+          description: Unauthorised error response
+          schema:
+            $ref: '#/definitions/Error'
+  /transaction/bet:
+    post:
+      description: Create a new transaction for bets
+      summary: Create a bet transaction
+      tags:
+        - Transaction
+      operationId: TransactionBetPost
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: ''
+          schema:
+            $ref: '#/definitions/TransactionPayload'
+      responses:
+        '200':
+          description: >-
+            If the authentication token is valid, the user object will be
+            returned.
+          schema:
+            $ref: '#/definitions/TransactionResponse'
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: '#/definitions/Error'
+        '401':
+          description: Unauthorised error response
+          schema:
+            $ref: '#/definitions/Error'
+  /transaction/debit:
+    post:
+      description: Create a new transaction for bets
+      summary: Create a debit transaction
+      tags:
+        - Transaction
+      operationId: TransactionDebitPost
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: ''
+          schema:
+            $ref: '#/definitions/TransactionPayload'
+      responses:
+        '200':
+          description: >-
+            If the authentication token is valid, the user object will be
+            returned.
+          schema:
+            $ref: '#/definitions/TransactionResponse'
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: '#/definitions/Error'
+        '401':
+          description: Unauthorised error response
+          schema:
+            $ref: '#/definitions/Error'
+  /transaction/win:
+    post:
+      description: Create a new transaction for winnings
+      summary: Create a win transaction
+      tags:
+        - Transaction
+      operationId: TransactionWinPost
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: ''
+          schema:
+            $ref: '#/definitions/WinTransaction'
+      responses:
+        '200':
+          description: >-
+            If the authentication token is valid, the user object will be
+            returned.
+          schema:
+            $ref: '#/definitions/TransactionResponse'
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: '#/definitions/Error'
+        '401':
+          description: Unauthorised error response
+          schema:
+            $ref: '#/definitions/Error'
+  /transaction/refund:
+    post:
+      description: Create a new transaction for refunds
+      summary: Create a refund transaction
+      tags:
+        - Transaction
+      operationId: TransactionRefundPost
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: ''
+          schema:
+            $ref: '#/definitions/RefundTransaction'
+      responses:
+        '200':
+          description: >-
+            If the authentication token is valid, the user object will be
+            returned.
+          schema:
+            $ref: '#/definitions/TransactionResponse'
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: '#/definitions/Error'
+        '401':
+          description: Unauthorised error response
+          schema:
+            $ref: '#/definitions/Error'
+  /transaction/withdraw:
+    post:
+      description: Create a new transaction for a withdrawal
+      summary: Create a withdrawal transaction
+      tags:
+        - Transaction
+      operationId: TransactionWithdrawPost
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: ''
+          schema:
+            $ref: '#/definitions/TransactionPayload'
+      responses:
+        '200':
+          description: >-
+            If the authentication token is valid, the user object will be
+            returned.
+          schema:
+            $ref: '#/definitions/TransactionResponse'
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: '#/definitions/Error'
+        '401':
+          description: Unauthorised error response
+          schema:
+            $ref: '#/definitions/Error'
+  /translations/key:
+    post:
+      description: Create a new key into the translations system with a default value.
+      summary: Create a translation
+      tags:
+        - Translations
+      operationId: TranslationsKeyPost
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: ''
+          schema:
+            $ref: '#/definitions/TranslationPayload'
+      responses:
+        '201':
+          description: Created
+          headers: {}
+    get:
+      description: >-
+        This returns the translation data for a single key from an optional
+        language parameter. If no language is specified, it will default to your
+        partner-level configuration.
+      summary: Get a translation by its key
+      tags:
+        - Translations
+      operationId: TranslationsKeyGet
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: q
+          in: query
+          required: true
+          type: string
+          description: Translation key
+        - name: language
+          in: query
+          required: false
+          type: string
+          description: Language ISO code
+      responses:
+        '200':
+          description: The specified translation object
+          schema:
+            $ref: '#/definitions/Translation'
+          headers: {}
+  /translations/list:
+    get:
+      description: >-
+        This returns an array of translation objects for a list of keys. If no
+        language is specified, it will default to your partner-level
+        configuration.
+      summary: Get translation list
+      tags:
+        - Translations
+      operationId: TranslationsListGet
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: 'q[]'
+          in: query
+          required: true
+          type: array
+          items:
+            type: string
+          description: Array of translation keys
+        - name: scope
+          in: query
+          required: true
+          type: string
+          description: Top level scope to return e.g. 'Sport.'
+        - name: language
+          in: query
+          required: false
+          type: string
+          description: Language ISO code
+      responses:
+        '200':
+          description: >-
+            A data array of requested translations and an additional warnings
+            array containing any keys that could not be found.
+          schema:
+            $ref: '#/definitions/TranslationList'
+          headers: {}
+  /user/me:
+    get:
+      description: Get the authenticated users account details
+      summary: Get the current user details
+      tags:
+        - Users
+      operationId: UserMeGet
+      deprecated: false
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        '200':
+          description: >-
+            If the authentication token is valid, the user object will be
+            returned.
+          schema:
+            $ref: '#/definitions/User'
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: '#/definitions/Error'
+        '401':
+          description: Unauthorised error response
+          schema:
+            $ref: '#/definitions/Error'
+  /user/me/balance:
+    get:
+      description: Get the authenticated users account balance
+      summary: Get the current user balance
+      tags:
+        - Users
+      operationId: UserMeBalanceGet
+      deprecated: false
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        '200':
+          description: >-
+            If the authentication token is valid, the user wallet object will be
+            returned.
+          schema:
+            $ref: '#/definitions/Wallet'
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: '#/definitions/Error'
+        '401':
+          description: Unauthorised error response
+          schema:
+            $ref: '#/definitions/Error'
+  /user/me/notes:
+    get:
+      description: Get the authenticated users notes
+      summary: Get the current user notes
+      tags:
+        - Users
+      operationId: UserMeNotesGet
+      deprecated: false
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        '200':
+          description: A list of user notes
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Note'
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: '#/definitions/Error'
+        '401':
+          description: Unauthorised error response
+          schema:
+            $ref: '#/definitions/Error'
+  /user/password:
+    put:
+      description: >-
+        Update the new password for a given user from their specified reset
+        token
+      summary: Create a password reset
+      tags:
+        - Users
+      operationId: UserPasswordPut
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          required: false
+          description: ''
+          schema:
+            $ref: '#/definitions/ResetTokenRequest'
+      responses:
+        '200':
+          description: 'On success, a 200 OK is issued with no content'
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: '#/definitions/Error'
+  /user/password/token:
+    post:
+      description: Create a password reset request for a specified email
+      summary: Create a new password
+      tags:
+        - Users
+      operationId: UserPasswordTokenPost
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: email
+          in: query
+          required: true
+          type: string
+          description: Input email address
+      responses:
+        '200':
+          description: 'On success, the reset token is returned.'
+          schema:
+            $ref: '#/definitions/ResetToken'
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: '#/definitions/Error'
   /user/auth:
     post:
+      description: Login as the user using their email/password and return a JWT.
+      summary: Create a user authentication token
       tags:
         - Users
-      description: Login as the user using their email/password and return a JWT.
-      operationId: postUserLogin
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Login"
-        description: The fields required to login the user
+      operationId: UserAuthPost
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          required: false
+          description: The fields required to login the user
+          schema:
+            $ref: '#/definitions/Login'
       responses:
-        200:
-          description: On success, the authenticated JWT is returned.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Token"
-        400:
+        '200':
+          description: 'On success, the authenticated JWT is returned.'
+          schema:
+            $ref: '#/definitions/Token'
+          headers: {}
+        '400':
           description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/LoginError"
-            encoding:
-              headers:
-                X-Rate-Limit-Limit:
-                  description: The number of allowed requests in the current period
-                  schema:
-                    type: integer
-                X-Rate-Limit-Remaining:
-                  description: The number of allowed requests remaining
-                  schema:
-                    type: integer
-                X-Rate-Limit-Reset: 
-                  description: Timestamp of when the rate limit resets 
-                  schema:
-                    type: string
+          schema:
+            $ref: '#/definitions/Error'
   /user/auth/token:
     post:
+      description: 'Given a refresh token, issue a new JWT for the user.'
+      summary: Refresh a user authentication token
       tags:
         - Users
-      description: Given a refresh token, issue a new JWT for the user.
-      operationId: postRefreshToken
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/RefreshToken"
-        description: The fields required to create a new JWT
+      operationId: UserAuthTokenPost
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          required: false
+          description: The fields required to create a new JWT
+          schema:
+            $ref: '#/definitions/RefreshToken'
       responses:
-        200:
-          description: On success, the authenticated JWT is returned.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Token"
-        400:
+        '200':
+          description: 'On success, the authenticated JWT is returned.'
+          schema:
+            $ref: '#/definitions/Token'
+          headers: {}
+        '400':
           description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/RefreshTokenError"
+          schema:
+            $ref: '#/definitions/Error'
   /user:
     head:
       tags:
         - Users
       description: Check whether or not an email address is already in use.
-      operationId: headEmailCheckExists
+      operationId: Check a user exists
       parameters:
-        - name: "email"
-          in: query
-          description: Input email address
-          required: true
-          type: string
-      responses:
-        200:
-          description: The email specified exists in the platform.
-        404:
-          description: The email specified does not exist in the platform.
-    post:
-      tags:
-        - Users
-      description: Register a new user using either email / username and return a JWT.
-      operationId: postRegister
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Register"
-        description: The JSON body payload to send a registration request.
-      responses:
-        200:
-          description: On success, the authenticated JWT is returned.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Token"
-        400:
-          description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/RegistrationError"
-    get:
-      tags:
-        - Users
-      description: Fetch a minimal user object linked to either a specified email or username parameter.
-      operationId: getUserDetails
-      parameters:
-        - name: "email"
+        - name: email
           in: query
           description: Input email address
           required: false
           type: string
-        - name: "username"
+        - name: username
           in: query
           description: Input username
           required: false
-          type: string 
+          type: string
       responses:
-        200:
-          description: The username exists, return it.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/UserDetails"          
-        400:
+        '200':
+          description: The email specified exists in the platform.
+        '404':
+          description: The email specified does not exist in the platform.
+    post:
+      description: Register a new user using either email / username and return a JWT.
+      summary: Create a new user
+      tags:
+        - Users
+      operationId: UserPost
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          required: false
+          description: The JSON body payload to send a registration request.
+          schema:
+            $ref: '#/definitions/Register'
+      responses:
+        '200':
+          description: 'On success, the authenticated JWT is returned.'
+          schema:
+            $ref: '#/definitions/Token'
+          headers: {}
+        '400':
           description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"         
-    
-## Tote    
+          schema:
+            $ref: '#/definitions/Error'
+    get:
+      description: >-
+        Fetch a minimal user object linked to either a specified email or
+        username parameter.
+      summary: Search for a user
+      tags:
+        - Users
+      operationId: UserGet
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: email
+          in: query
+          required: false
+          type: string
+          description: Input email address
+        - name: username
+          in: query
+          required: false
+          type: string
+          description: Input username
+      responses:
+        '200':
+          description: 'The username exists, return it.'
+          schema:
+            $ref: '#/definitions/UserDetails'
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: '#/definitions/Error'
   /tote/bet:
     post:
-      tags:
-        - Bets
-        - Tote
-        - Tickets 
       description: Places each bet that is on the ticket
-      operationId: PostTicket
-      responses:
-        200:
-          description: Return a single ticket object with selection IDs attached to bets
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/BetslipTicket"
-        400:
-          description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        404:
-          description: Standardised not found response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-  /tote/bet/types:
-    get:
-      tags:
-        - Tote
-        - BetTypes 
-      description: Returns a list of all bet types available
-      operationId: GetBetTypes
-      responses:
-        200:
-          description: Returns a list of all bet types available
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/BetType"
-        400:
-          description: Standardised error response
-          content:
-            application/json:
-              schema:
-                type: array 
-                items: 
-                  $ref: "#/components/schemas/Error"
-        404:
-          description: Standardised not found response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-  /tote/bets/{id}:
-    get:
+      summary: Create a Tote bet
       tags:
         - Bets
-        - Tote
-        - Tickets 
-      description: Get a single bet by its LOTTO ID. This endpoint can be used to return an individual Tote TSN.
-      operationId: GetToteBetById
+      operationId: ToteBetPost
+      deprecated: false
+      produces:
+        - application/json
+      parameters: []
       responses:
-        200:
-          description: Return a single bet object
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ToteBet"
-        400:
+        '200':
+          description: Return a single ticket object with selection IDs attached to bets
+          schema:
+            $ref: '#/definitions/BetslipTicket'
+          headers: {}
+        '400':
           description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        404:
+          schema:
+            $ref: '#/definitions/Error'
+        '404':
           description: Standardised not found response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-                
-  /tote/cards:
-    get:
-      tags:
-        - Cards
-        - Tote
-      description: Return a list of cards for today
-      operationId: getCards
-      parameters:
-        - name: pageKey
-          in: query
-          description: used during paginated responses
-          required: false
           schema:
-            type: string
-        - name: limit
-          in: query
-          description: maximum number of results to return
-          required: false
-          schema:
-            type: integer
-            format: int32
-      responses:
-        200:
-          description: Return an array of card objects
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Card"
-        400:
-          description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-  /tote/cards/{id}:
+            $ref: '#/definitions/Error'
+  '/tote/bets/{id}':
     get:
+      description: >-
+        Get a single bet by its LOTTO ID. This endpoint can be used to return an
+        individual Tote TSN.
+      summary: Get a Tote bet by its ID
       tags:
-        - Cards
-        - Tote
-      description: Return a single card specified by its identifier
-      operationId: getCardById
-      responses:
-        200:
-          description: Return a single card object
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  card:
-                    $ref: "#/components/schemas/Card"
-        400:
-          description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        404:
-          description: Standardised not found response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-             
-  /tote/courses:
-    get:
-      tags:
-        - Courses
-        - Tote
-      description: Return a list of courses
-      operationId: getToteCourses
-      parameters:
-        - name: page
-          in: query
-          description: used during paginated responses
-          required: false
-          schema:
-            type: integer
-            format: int32
-        - name: limit
-          in: query
-          description: maximum number of results to return
-          required: false
-          schema:
-            type: integer
-            format: int32
-      responses:
-        200:
-          description: Return an array of course objects
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  courses:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/ToteCourse"
-        400:
-          description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-  /tote/courses/{id}:
-    get:
-      tags:
-        - Courses
-        - Tote
-      description: Return a single course by its ID
-      operationId: getToteCourseById
-      responses:
-        200:
-          description: Return the single course specified by its ID
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  course:
-                    $ref: "#/components/schemas/ToteCourse"
-        400:
-          description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-                
-  /tote/pools:
-    get:
-      tags:
-        - Pools
-        - Tote
-      description: |
-        Return a list of pools for today
-      operationId: getPools
-      parameters:
-        - name: pageKey
-          in: query
-          description: used during paginated responses
-          required: false
-          schema:
-            type: string
-        - name: limit
-          in: query
-          description: maximum number of results to return
-          required: false
-          schema:
-            type: integer
-            format: int32
-      responses:
-        200:
-          description: Returns an array of pool objectsp
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Pool"
-        400:
-          description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-                
-  /tote/races/{id}:
-    get:
-      tags:
-        - Races
-        - Tote
-      description: Return a race object by its given identifier
-      operationId: getRaceById
-      responses:
-        200:
-          description: Returns a race object
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Race"
-        400:
-          description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-        404:
-          description: Standardised not found response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-                
-  /tote/tickets:
-    get:
-      tags:
-        - Tote
-        - Tickets 
-      description: Returns current users bets with bets and selections attached 
-      operationId: GetTickets
-      responses:
-        200:
-          description: Returns current users bets with bets and selections attached
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  tickets:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/ToteTicket"
-        400:
-          description: Standardised error response
-          content:
-            application/json:
-              schema:
-                type: array 
-                items: 
-                  $ref: "#/components/schemas/Error"
-        404:
-          description: Standardised not found response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-  /tote/tickets/{id}:
-    get:
-      tags:
-        - Tote
-        - Tickets 
-      description: Returns a single Tote ticket and all its bets / selection by its given ID 
-      operationId: GetToteTicketById
+        - Bets
+      operationId: ToteBetsByIdGet
+      deprecated: false
+      produces:
+        - application/json
       parameters:
         - name: id
           in: path
-          description: Ticket ID
           required: true
+          type: string
+          description: ''
+      responses:
+        '200':
+          description: Return a single bet object
           schema:
-            type: integer
-            format: int64
-      responses:
-        200:
-          description: Returns current users bets with bets and selections attached
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  ticket:
-                    $ref: "#/components/schemas/ToteTicket"
-        400:
+            $ref: '#/definitions/ToteBet'
+          headers: {}
+        '400':
           description: Standardised error response
-          content:
-            application/json:
-              schema:
-                type: array 
-                items: 
-                  $ref: "#/components/schemas/Error"
-        404:
+          schema:
+            $ref: '#/definitions/Error'
+        '404':
           description: Standardised not found response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-                
-  /tote/test/cards:
+          schema:
+            $ref: '#/definitions/Error'
+  /tote/bet/types:
     get:
+      description: Returns a list of all bet types available
+      summary: Get the Tote bet types list
       tags:
-        - Cards
-      description: "Return a static list of cards. IDs: 83, 84"
-      operationId: getStaticCards
+        - Tote
+      operationId: ToteBetTypesGet
+      deprecated: false
+      produces:
+        - application/json
+      parameters: []
       responses:
-        200:
-          description: Return an array of card objects
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Card"
-        400:
+        '200':
+          description: Returns a list of all bet types available
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/BetType'
+          headers: {}
+        '400':
           description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-  /tote/test/pools:
+          schema:
+            $ref: '#/definitions/Error'
+        '404':
+          description: Standardised not found response
+          schema:
+            $ref: '#/definitions/Error'
+  /tote/tickets:
     get:
+      description: Returns current users bets with bets and selections attached
+      summary: Get a list of Tote tickets
       tags:
-        - Cards
-      description: "Return a static list of pools. IDs: 78 through 164"
-      operationId: getStaticPools
+        - Tote
+      operationId: ToteTicketsGet
+      deprecated: false
+      produces:
+        - application/json
+      parameters: []
       responses:
-        200:
-          description: Return an array of card objects
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Pool"
-        400:
+        '200':
+          description: Returns current users bets with bets and selections attached
+          schema:
+            $ref: '#/definitions/ToteTicketsResponse'
+          headers: {}
+        '400':
           description: Standardised error response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-                
-servers:
-  - url: https://api.endpoints.gc-lotto-dev.cloud.goog/
-security:
-  - ApiKeyAuth: []
-components:
-  securitySchemes:
-    ApiKeyAuth:
-      type: apiKey
-      description: Authorisation key required on every request. Used to ensure all requests
-        are filtered down on a per-partner level.
-      name: apiKey
-      in: query
-    UserKeyAuth:
-      type: http
-      scheme: bearer
-  schemas:
-    Category:
-      type: object
-      required:
-        - id
-        - key
-        - name
-      properties:
-        id:
-          type: integer
-          format: int32
-        key:
-          type: string
-        name:
-          type: string
-        eventTally:
-          type: integer
-          format: int32
-    Component:
-      type: object
-      required:
-        - id
-        - name
-        - key
-        - basePrice
-        - cutoffTime
-        - lottery
-      properties:
-        id:
-          type: integer
-          format: int32
-        name:
-          type: string
-        key:
-          type: string
-        basePrice:
-          type: number
-          format: double
-        cutoffTime:
-          type: integer
-          format: int32
-        lottery:
-          $ref: "#/components/schemas/Lottery"
-    Country:
-      type: object
-      required:
-        - id
-        - isoCode
-        - name
-      properties:
-        id:
-          type: integer
-          format: int32
-        continent:
-          type: string
-        isoCode:
-          type: string
-        iso3Code:
-          type: string
-        name:
-          type: string
-    Currency:
-      type: object
-      required:
-        - id
-        - shortName
-        - symbol
-      properties:
-        id:
-          type: integer
-          format: int32
-        exchangeRate:
-          type: number
-          format: float
-        name:
-          type: string
-        reverseRate:
-          type: number
-          format: float
-        roundingFactor:
-          type: number
-          format: float
-        shortName:
-          type: string
-        symbol:
-          type: string
-    Date:
-      type: object
-      required:
-        - date
-        - human
-        - time
-        - timestamp
-      properties:
-        timezone:
-          type: string
-          example: "UTC"
-        date:
-          type: string
-          format: date-time
-          example: "2018-01-01 12:00:00"
-        human:
-          type: string
-          example: "01/01/2018 12:00"
-        time:
-          type: string
-          pattern: '^\d{2}:\d{2}$'
-          example: "12:00"
-        timestamp:
-          type: integer
-          format: int32
-          example: "1514808000"
-    Draw:
-      type: object
-      required:
-        - id
-        - cutoffDate
-        - localDate
-        - lotteryDate
-        - drawNumber
-        - numbers
-        - jackpot
-      properties:
-        id:
-          type: integer
-          format: int32
-        cutoffDate:
-          $ref: "#/components/schemas/Date"
-        localDate:
-          $ref: "#/components/schemas/Date"
-        lotteryDate:
-          $ref: "#/components/schemas/Date"
-        drawNumber:
-          type: integer
-          format: int32
-          nullable: true
-          example: "1021"
-        numbers:
-          type: string
-          nullable: true
-        extraNumbers:
-          type: string
-          nullable: true
-        jackpot:
+          schema:
+            $ref: '#/definitions/Error'
+        '404':
+          description: Standardised not found response
+          schema:
+            $ref: '#/definitions/Error'
+  '/tote/tickets/{id}':
+    get:
+      description: >-
+        Returns a single Tote ticket and all its bets / selection by its given
+        ID
+      summary: Get a Tote ticket by its ID
+      tags:
+        - Tote
+      operationId: ToteTicketsByIdGet
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          required: true
           type: integer
           format: int64
-          example: "1500000"
-        humanJackpot:
+          description: Ticket ID
+      responses:
+        '200':
+          description: Returns current users bets with bets and selections attached
+          schema:
+            $ref: '#/definitions/ToteTicketsResponse1'
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: '#/definitions/Error'
+        '404':
+          description: Standardised not found response
+          schema:
+            $ref: '#/definitions/Error'
+  /tote/cards:
+    get:
+      description: Return a list of cards for today
+      summary: Get the Tote cards
+      tags:
+        - Cards
+      operationId: ToteCardsGet
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: pageKey
+          in: query
+          required: false
           type: string
-          nullable: true
-          example: "1.5M"
-        humanDate:
-          type: string
-          nullable: true
-          example: "Monday @ 18:00"
-    Error:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
+          description: used during paginated responses
+        - name: limit
+          in: query
+          required: false
           type: integer
           format: int32
-        error:
-          type: string
-        warnings:
-          type: array
-          items:
-            type: object
-            properties:
-              error:
-                type: string
-                example: "Missing email address"
-              code:
-                type: string
-                example: "ERR1000"
-    RegistrationError:
-      oneOf:
-        - $ref: "#/components/schemas/AddressWarning"
-        - $ref: "#/components/schemas/AgeNotMet"
-        - $ref: "#/components/schemas/CountryNotFound"
-        - $ref: "#/components/schemas/DuplicateEmail"
-        - $ref: "#/components/schemas/DuplicateUsername"
-        - $ref: "#/components/schemas/GenericErrorCode"
-        - $ref: "#/components/schemas/InvalidGender"
-        - $ref: "#/components/schemas/InvalidEmail"
-        - $ref: "#/components/schemas/InvalidDOBFormat"
-        - $ref: "#/components/schemas/InvalidDOB"
-        - $ref: "#/components/schemas/InvalidRequest"
-        - $ref: "#/components/schemas/InvalidCountryIso"
-        - $ref: "#/components/schemas/InvalidFirstname"
-        - $ref: "#/components/schemas/InvalidLastname"
-        - $ref: "#/components/schemas/InvalidToken"
-        - $ref: "#/components/schemas/InvalidLogin"
-        - $ref: "#/components/schemas/MissingPassword"
-        - $ref: "#/components/schemas/MissingFirstname"
-        - $ref: "#/components/schemas/MissingLastname"
-        - $ref: "#/components/schemas/MissingDOB"
-        - $ref: "#/components/schemas/MissingLine1"
-        - $ref: "#/components/schemas/MissingCity"
-        - $ref: "#/components/schemas/MissingPostcode"
-        - $ref: "#/components/schemas/MissingCountryIso"
-        - $ref: "#/components/schemas/MissingPhoneNumber"
-        - $ref: "#/components/schemas/MissingSecurityQuestion"
-        - $ref: "#/components/schemas/MissingSecurityAnswer"
-        - $ref: "#/components/schemas/PasswordComplexity"
-        - $ref: "#/components/schemas/SystemException"
-        - $ref: "#/components/schemas/UserWarning"
-    LoginError:
-      oneOf:
-        - $ref: "#/components/schemas/GenericErrorCode"
-        - $ref: "#/components/schemas/InvalidEmail"
-        - $ref: "#/components/schemas/InvalidRequest"
-        - $ref: "#/components/schemas/InvalidToken"
-        - $ref: "#/components/schemas/MissingPassword"
-        - $ref: "#/components/schemas/SystemException"
-        - $ref: "#/components/schemas/UserExcluded"
-        - $ref: "#/components/schemas/LoginTimeout"
-        - $ref: "#/components/schemas/TooManyLoginFails"
-    RefreshTokenError:
-      oneOf:
-        - $ref: "#/components/schemas/GenericErrorCode"
-        - $ref: "#/components/schemas/UserExcluded"
-    PasswordResetError:
-      oneOf:
-        - $ref: "#/components/schemas/GenericErrorCode"
-        - $ref: "#/components/schemas/PasswordComplexity"
-        - $ref: "#/components/schemas/SystemException"
-        - $ref: "#/components/schemas/InvalidResetToken"
-    UserError:
-      oneOf:
-        - $ref: "#/components/schemas/GenericErrorCode"
-        - $ref: "#/components/schemas/UserExcluded"
-    MissingEmail:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
-          type: string
-          example: "ERR1000" 
-        error:
-          type: string
-          example: "Missing email address"
-    MissingPassword:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
-          type: string
-          example: "ERR1001" 
-        error:
-          type: string
-          example: "Missing password"
-    MissingFirstname:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
-          type: string
-          example: "ERR1002" 
-        error:
-          type: string
-          example: "Missing firstname"
-    MissingLastname:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
-          type: string
-          example: "ERR1003" 
-        error:
-          type: string
-          example: "Missing lastname"
-    MissingDOB:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
-          type: string
-          example: "ERR1004" 
-        error:
-          type: string
-          example: "Missing date of birth"
-    MissingLine1:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
-          type: string
-          example: "ERR1005" 
-        error:
-          type: string
-          example: "Missing first line address"
-    MissingCity:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
-          type: string
-          example: "ERR1006" 
-        error:
-          type: string
-          example: "Missing city"
-    MissingPostcode:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
-          type: string
-          example: "ERR1007" 
-        error:
-          type: string
-          example: "Missing postcode"
-    MissingCountryIso:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
-          type: string
-          example: "ERR1008" 
-        error:
-          type: string
-          example: "Missing country ISO code"
-    MissingPhoneNumber:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
-          type: string
-          example: "ERR1009" 
-        error:
-          type: string
-          example: "Missing phone number"
-    MissingSecurityAnswer:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
-          type: string
-          example: "ERR1010" 
-        error:
-          type: string
-          example: "Missing security answer"
-    MissingSecurityQuestion:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
-          type: string
-          example: "ERR1011" 
-        error:
-          type: string
-          example: "Missing security question"
-    MissingUsernameEmail:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
-          type: string
-          example: "ERR1012" 
-        error:
-          type: string
-          example: "Missing username / email"
-    InvalidEmail:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
-          type: string
-          example: "ERR2050" 
-        error:
-          type: string
-          example: "Invalid email address" 
-    InvalidUsername:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
-          type: string
-          example: "ERR2060" 
-        error:
-          type: string
-          example: "Invalid username" 
-    InvalidDOBFormat:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
-          type: string
-          example: "ERR2070" 
-        error:
-          type: string
-          example: "Invalid date format for Date of Birth. Accepted format is yyyy-mm-dd"
-    InvalidDOB:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
-          type: string
-          example: "ERR2080" 
-        error:
-          type: string
-          example: "Invalid date of birth"
-    InvalidRequest:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
-          type: string
-          example: "ERR2020" 
-        error:
-          type: string
-          example: "Invalid request"
-    KycResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-          example: "false" 
-    KycUpload:
-      type: object
-      properties:
-        source:
-          type: integer
-          format: int32          
-          example: "3"
-        files:
-          type: object
-    DuplicateEmail:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
-          type: string
-          example: "ERR2000" 
-        error:
-          type: string
-          example: "Email already in use"
-    DuplicateUsername:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
-          type: string
-          example: "ERR2001" 
-        error:
-          type: string
-          example: "Username already in use"
-    InvalidCountryIso:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
-          type: string
-          example: "ERR2021" 
-        error:
-          type: string
-          example: "Invalid country ISO"
-    CountryNotFound:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
-          type: string
-          example: "ERR2022" 
-        error:
-          type: string
-          example: "Specified country not found"
-    InvalidGender:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
-          type: string
-          example: "ERR2024" 
-        error:
-          type: string
-          example: "Invalid gender"
-    InvalidFirstname:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
-          type: string
-          example: "ERR2025" 
-        error:
-          type: string
-          example: "Invalid characters in firstname"
-    InvalidLastname:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
-          type: string
-          example: "ERR2026" 
-        error:
-          type: string
-          example: "Invalid characters in lastname"
-    InvalidLogin:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
-          type: string
-          example: "ERR2027" 
-        error:
-          type: string
-          example: "Invalid login credentials provided"
-    InvalidResetToken:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
-          type: string
-          example: "ERR2200" 
-        error:
-          type: string
-          example: "Invalid or missing reset token parameter"
-    PasswordComplexity:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
-          type: string
-          example: "ERR2250" 
-        error:
-          type: string
-          example: "The password must be 8 to 16 characters long and must have the following: one uppercase & lowercase letters and a special character"
-    AgeNotMet:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
-          type: string
-          example: "ERR2002" 
-        error:
-          type: string
-          example: "Minimum age requirement not met"
-    UserVerificationEmail:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
-          type: string
-          example: "ERR2100" 
-        error:
-          type: string
-          example: "A user already exists with the details provided. If you have forgotten your password please use the password reset functionality."
-    AddressWarning:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
-          type: string
-          example: "ERR2101" 
-        error:
-          type: string
-          example: "There might already be a user registered on the same address."
-    UserWarning:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
-          type: string
-          example: "ERR2102" 
-        error:
-          type: string
-          example: "A user with the same name already exists."
-    SystemException:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
-          type: string
-          example: "SYS1000" 
-        error:
-          type: string
-          example: "A system error occurred. Please contact an administrator."
-    InvalidToken:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
-          type: string
-          example: "SYS2000" 
-        error:
-          type: string
-          example: "Invalid token"
-    LoginTimeout:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
-          type: string
-          example: "SYS3000" 
-        error:
-          type: string
-          example: "Too many failed login attempts"
-    GenericErrorCode:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
-          type: string
-          example: "SYS9999" 
-        error:
-          type: string
-          example: "Missing or invalid field specified"
-    UserExcluded:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
-          type: string
-          example: "ERR3000" 
-        error:
-          type: string
-          example: "This user has been excluded" 
-    EmailNotFound:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
-          type: string
-          example: "ERR3100" 
-        error:
-          type: string
-          example: "Email specified does not exist"
-    TooManyLoginFails:
-      type: object
-      required:
-        - code
-        - error
-      properties:
-        code:
-          type: string
-          example: "ERR3100" 
-        error:
-          type: string
-          example: "Too many failed login attempts"             
-    Event:
-      type: object
-      required:
-        - id
-        - name
-        - key
-        - categoryId
-        - scheduledTime
-        - startTime
-        - isTimeDecided
-        - sportId
-        - score
-        - status
-        - competitors
-      properties:
-        id:
+          description: maximum number of results to return
+      responses:
+        '200':
+          description: Return an array of card objects
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Card'
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: '#/definitions/Error'
+  '/tote/cards/{id}':
+    get:
+      description: Return a single card specified by its identifier
+      summary: Get a Tote card by its ID
+      tags:
+        - Cards
+      operationId: ToteCardsByIdGet
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: ''
+      responses:
+        '200':
+          description: Return a single card object
+          schema:
+            $ref: '#/definitions/ToteCardsResponse'
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: '#/definitions/Error'
+        '404':
+          description: Standardised not found response
+          schema:
+            $ref: '#/definitions/Error'
+  /tote/test/cards:
+    get:
+      description: 'Return a static list of cards. IDs: 83, 84'
+      summary: Get the test Tote cards
+      tags:
+        - Cards
+      operationId: ToteTestCardsGet
+      deprecated: false
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        '200':
+          description: Return an array of card objects
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Card'
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: '#/definitions/Error'
+  /tote/test/pools:
+    get:
+      description: 'Return a static list of pools. IDs: 78 through 164'
+      summary: Get the test Tote pools
+      tags:
+        - Cards
+      operationId: ToteTestPoolsGet
+      deprecated: false
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        '200':
+          description: Return an array of card objects
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Pool'
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: '#/definitions/Error'
+  /tote/courses:
+    get:
+      description: Return a list of courses
+      summary: Get the Tote course list
+      tags:
+        - Courses
+      operationId: ToteCoursesGet
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: page
+          in: query
+          required: false
           type: integer
           format: int32
-        key:
-          type: string
-        categoryId:
+          description: used during paginated responses
+        - name: limit
+          in: query
+          required: false
           type: integer
           format: int32
-        nextLiveTime:
-          nullable: true
+          description: maximum number of results to return
+      responses:
+        '200':
+          description: Return an array of course objects
+          schema:
+            $ref: '#/definitions/ToteCoursesResponse'
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: '#/definitions/Error'
+  '/tote/courses/{id}':
+    get:
+      description: Return a single course by its ID
+      summary: Get a Tote course by its ID
+      tags:
+        - Courses
+      operationId: ToteCoursesByIdGet
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          required: true
           type: string
-        scheduledTime:
+          description: ''
+      responses:
+        '200':
+          description: Return the single course specified by its ID
+          schema:
+            $ref: '#/definitions/ToteCoursesResponse1'
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: '#/definitions/Error'
+        '404':
+          description: Standardised not found response
+          schema:
+            $ref: '#/definitions/Error'
+  /tote/pools:
+    get:
+      description: |
+        Return a list of pools for today
+      summary: Get the list of Tote pools
+      tags:
+        - Pools
+      operationId: TotePoolsGet
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: pageKey
+          in: query
+          required: false
           type: string
-        startTime:
-          nullable: true
-          type: string
-        isTimeDecided:
-          type: boolean
-        sportId:
+          description: used during paginated responses
+        - name: limit
+          in: query
+          required: false
           type: integer
           format: int32
-        tournamentId:
-          type: integer
-          format: int32
-        tournamentRoundId:
-          type: integer
-          format: int32
-        name:
-          type: string
-        score:
-          $ref: "#/components/schemas/EventScore"
-        status:
-          $ref: "#/components/schemas/EventStatus"
-        venue:
-          $ref: "#/components/schemas/Venue"
-        competitors:
-          type: array
-          items:
-            type: object
-            required:
-              - id
-              - key
-              - name
-              - abbreviation
-              - countryId
-              - qualifier
-              - order
-            properties:
-              id:
-                type: integer
-              key:
-                type: string
-              name:
-                type: string
-              abbreviation:
-                type: string
-              countryId:
-                type: integer
-              qualifier:
-                nullable: true
-              order:
-                type: integer
-        markets:
-          type: array
-          items:
-            type: object
-            required:
-              - code
-              - outcomeCodes
-              - id
-              - favourite
-              - fullName
-              - marketId
-              - key
-              - name
-              - specifier
-              - status
-              - winnersTally
-              - outcomes
-            properties:
-              code:
-                type: string
-              outcomeCodes:
-                nullable: true
-                type: string
-              id:
-                type: integer
-              favourite:
-                type: boolean
-              fullName:
-                type: string
-              marketId:
-                type: integer
-              key:
-                type: string
-              name:
-                type: string
-              specifier:
-                type: string
-              status:
-                type: integer
-              winnersTally:
-                nullable: true
-                type: integer
-              outcomes:
-                nullable: true
-    EventClock:
-      type: object
-      required:
-        - matchTime
-        - remaining
-        - remainingInPeriod
-        - stopped
-        - lastUpdated
-      properties:
-        matchTime:
-          nullable: true
-          type: string
-        remaining:
-          nullable: true
-          type: string
-        remainingInPeriod:
-          nullable: true
-          type: string
-        stopped:
-          nullable: true
-          type: boolean
-        lastUpdated:
-          nullable: true
-          type: string
-    EventScore:
-      type: object
-      required:
-        - home
-        - away
-        - homePeriodScore
-        - awayPeriodScore
-        - clock
-      properties:
-        home:
-          type: integer
-          format: int32
-        away:
-          type: integer
-          format: int32
-        homePeriodScore:
-          type: integer
-          format: int32
-        awayPeriodScore:
-          type: integer
-          format: int32
-        clock:
-          $ref: "#/components/schemas/EventClock"
-    EventStatus:
-      type: object
-      required:
-        - name
-        - isLive
-      properties:
-        name:
-          type: string
-        isLive:
-          type: boolean
-    Game:
-      type: object
-      required:
-        - id
-        - key
-        - name
-        - url
-        - nextDraw
-        - settings
-        - components
-      properties:
-        name:
-          type: string
-          example: "Spain's Bonoloto"
-        key:
-          type: string
-          example: "bonoloto"
-        type:
-          type: string
-          example: "classic"
-        url:
-          type: string
-          example: "spains-bonoloto"
-        nextDraw:
-          $ref: "#/components/schemas/Draw"
-        settings:
-          type: object
-          additionalProperties:
-            type: string
-          example:
-            gameColour: "#34a749"
-            continentCode: "EU"
-        components:
-          type: array
-          items:
-            $ref: "#/components/schemas/Component"
-    Login:
-      type: object
-      required:
-        - email
-        - password
-      properties:
-        email:
-          type: string
-        password:
-          type: string
-    Lottery:
-      type: object
-      required:
-        - id
-        - key
-        - name
-        - days
-        - humanDays
-        - time
-        - numbers
-      properties:
-        id:
-          type: integer
-          format: int32
-        key:
-          type: string
-          example: "bonoloto"
-        name:
-          type: string
-          example: "Spain's Bonoloto"
-        days:
-          type: string
-          example: "1,2,3,4,5,6"
-        humanDays:
-          type: string
-          example: "Mon, Tue, Wed, Thu, Fri, Sat"
-        time:
-          type: string
-          example: "19:00"
-          pattern: '^\d{2}:\d{2}$'
-        numbers:
-          type: object
-          properties:
-            main:
-              type: object
-              properties:
-                count:
-                  type: integer
-                  format: int32
-                  example: "6"
-                min:
-                  type: integer
-                  format: int32
-                  example: "1"
-                max:
-                  type: integer
-                  format: int32
-                  example: "49"
-            bonus:
-              type: object
-              nullable: true
-              properties:
-                count:
-                  description: "This value can be set as 0 even when the lottery has a bonus ball configuration. This is due to how the bonus balls are allocated from the picker."
-                  type: integer
-                  format: int32
-                  example: "0"
-
-                min:
-                  type: integer
-                  format: int32
-                  example: "0"
-                max:
-                  type: integer
-                  format: int32
-                  example: "9"
-    Note:
-      type: object
-      required:
-        - id
-        - text
-        - userId
-        - date
-      properties:
-        id:
-          type: integer
-          format: int32
-        text:
-          type: string
-        userId:
-          type: integer
-          format: int32
-        date:
-          type: string
-          format: date          
-    Partner:
-      type: object
-      required:
-        - id
-        - name
-        - commission
-        - contract
-        - user
-      properties:
-        id:
-          type: integer
-          format: int32
-        name:
-          type: string
-        commission:
-          type: integer
-          format: in32
-        contract:
-          type: boolean
-        user:
-          $ref: "#/components/schemas/User"
-    Profile:
-      type: object
-      required:
-        - addressId
-        - countryId
-        - currencyId
-        - dateOfBirth
-      properties:
-        addressId:
-          type: integer
-          format: int32
-        contactNumber:
-          type: string
-          nullable: true
-        country:
-          $ref: "#/components/schemas/Country"
-        countryId:
-          type: integer
-          format: int32
-        currency:
-          $ref: "#/components/schemas/Currency"
-        currencyId:
-          type: integer
-          format: int32
-        dateOfBirth:
-          type: string
-          format: date
-        mobileNumber:
-          type: string
-          nullable: true
-        timeZone:
-          type: string
-    Register:
-      type: object
-      required:
-        - email
-        - password
-        - firstName
-        - lastName
-        - dob
-        - line1
-        - city
-        - county
-        - postcode
-        - countryIso
-      optional:
-        - username
-        - line2
-        - security
-      properties:
-        email:
-          type: string
-          example: "example@mail.com"
-        password:
-          type: string
-          description: "Minimum of eight (8) characters in length. Must containt at least 1 of the following: Uppercase letter (A-Z), lowercase (a-z), number (0-9) and any special character."
-          example: "Pas$w0rD!"
-        username:
-          type: string
-          description: "Must be a minimum of 5 characters and a maximum 32 characters.Can only contain letters, numbers, periods (.), and underscores (_)."
-          example: "lotto_user"
-        firstName:
-          type: string
-          example: "John"
-        lastName:
-          type: string
-          example: "Doe"
-        dob:
-          type: string
-          example: "1989-03-20"
-        line1:
-          type: string
-          example: "10 Downing Street"
-        line2:
-          type: string
-          example: "Westminster"
-        city:
-          type: string
-          example: "London"
-        county:
-          type: string
-          example: "Greater London"
-        postcode:
-          type: string
-          example: "SW1A 2AA"
-        countryIso:
-          type: string
-          description: "2 letter ISO code of the country of residence"
-          example: "GB"
-        phoneNumber:
-          type: string
-          description: "Your mobile or landline phone number. This is optional by default but can be set as a required field."
-        marketingPrefs:
-          type: array
-          description: "An array of communication preferences the player wants to opt in to receive. Must be one of: email, sms, phone"
-          example: ["email", "sms", "phone"]
-        security:
-          type: array
-          description: "A multi-nested array of security question and answer pairs"
-          example: [["question":"What is your motther's maiden name? ","answer":"Test answer"]]
-          items:
-            $ref: "#/components/schemas/Security"
-    Security:
-      type: object
-      properties:
-        question:
-          type: string
-        answer:
-          type: string
-    Sport:
-      type: object
-      required:
-        - id
-        - key
-        - url
-        - name
-      properties:
-        id:
-          type: integer
-          format: int32
-        code:
-          type: string
-        icon:
-          type: string
-        key:
-          type: string
-        name:
-          type: string
-        url:
-          type: string
-        categories:
-          type: array
-          items:
-            $ref: "#/components/schemas/Category"
-        tournaments:
-          type: array
-          items:
-            $ref: "#/components/schemas/Tournament"
-    SportBet:
-      type: object
-      required:
-        - id
-        - transactionId
-        - userId
-        - createdDate
-        - amount
-        - odds
-        - status
-        - event
-        - market
-        - outcome
-      properties:
-        id:
-          type: "number"
-        transactionId:
-          type: "number"
-        userId:
-          type: "number"
-        createdDate:
-          type: "string"
-        amount:
-          type: "number"
-        odds:
-          type: "number"
-        isProcessed:
-          type: "boolean"
-        isWinning:
-          type: "boolean"
-        status:
-          type: "boolean"
-        sent:
-          type: "boolean"
-        winTransactionId:
-          type: "number"
-        event:
-          required:
-            - id
-            - key
-            - categoryId
-            - nextLiveTime
-            - scheduledTime
-            - startTime
-            - sportId
-            - name
-            - score
-            - status
-          properties:
-            id:
-              type: "number"
-            key:
-              type: "string"
-            scheduledTime:
-              type: "string"
-            startTime:
-              type: "string"
-            sportId:
-              type: "number"
-            tournamentId:
-              type: "number"
-            name:
-              type: "string"
-            status:
-              required:
-                - "name"
-                - "isLive"
-              properties:
-                name:
-                  type: "string"
-                isLive:
-                  type: "boolean"
-              type: "object"
-          type: "object"
-        market:
-          required:
-            - code
-            - outcomeCodes
-            - id
-            - favourite
-            - fullName
-            - marketId
-            - key
-            - name
-            - specifier
-            - status
-            - winnersTally
-            - outcomes
-          properties:
-            id:
-              type: "number"
-            favourite:
-              type: "boolean"
-            fullName:
-              type: "string"
-            marketId:
-              type: "number"
-            key:
-              type: "string"
-            name:
-              type: "string"
-            specifier:
-              type: "string"
-            status:
-              type: "number"
-          type: "object"
-        outcome:
-          required:
-            - id
-            - active
-            - name
-            - fullName
-            - outcomeId
-            - odds
-          properties:
-            id:
-              type: "number"
-            active:
-              type: "boolean"
-            name:
-              type: "string"
-            fullName:
-              type: "string"
-            outcomeId:
-              type: "number"
-            odds:
-              type: "number"
-          type: "object"
-    SportEvents:
-      type: object
-      properties:
-        live:
-          type: array
-          items:
-            $ref: "#/components/schemas/Event"
-        upcoming:
-          type: array
-          items:
-            $ref: "#/components/schemas/Event"
-    SportStatus:
-      type: object
-      required:
-        - liveodds
-        - pre
-      properties:
-        liveodds:
-          type: boolean
-        pre:
-          type: boolean
-    ResetToken:
-      type: object
-      properties:
-        resetToken:
-          type: string
-          example: "2TqB0eDzqqXA5yKk4NhYqVdfltLHgwH4"
-    ResetTokenRequest:
-      type: object
-      properties:
-        resetToken:
-          type: string
-          example: "2TqB0eDzqqXA5yKk4NhYqVdfltLHgwH4"
-        password:
-          type: string
-          example: "Tsg5x@Hx3"
-    RefreshToken:
-      type: object
-      properties:
-        refreshToken:
-          type: string
-          example: "cV1UhvLVwNuVja9uYwr2eKIWGZZzyvNYo2R4co6xtTMTIph83FqTwHQVcp3zObCjxT5dentSS0VEFWRC"
-    Token:
-      type: object
-      properties:
-        token:
-          type: string
-          example: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbiI6Ii1ERU1PLSIsImF1ZCI6ImFwaS5kZXYubG90LnRvIiwiZXhwIjoxNTU3MTY0MjQ0LCJpc3MiOiJsb3QudG8vdjEvYXBpLXVzZXJzIiwic3ViIjoiMSIsImp0aSI6IjFhYTRhMWZiLTczZmMtNDEyYS1iZGIyLWY2MWM2ODkwY2ZkMSIsImlhdCI6MTU1NzE2MDY0NH0.0KfFgw-7vKyO2b4uJkRsy0lusqIx3v_aGtv57JcuhbU"
-    Tournament:
-      type: object
-      required:
-        - id
-        - name
-        - key
-        - sportId
-        - categoryId
-      properties:
-        id:
-          type: integer
-          format: int32
-        name:
-          type: string
-        key:
-          type: string
-        eventTally:
-          type: integer
-          format: int32
-        sportId:
-          type: integer
-          format: int32
-        categoryId:
-          type: integer
-          format: int32
-    Translation:
-      type: object
-      required:
-        - key
-        - text
-      properties:
-        key:
-          type: string
-        text:
-          type: string
-        isExtended:
-          type: boolean
-        languageId:
-          type: integer
-          format: int32
-        partnerId:
-          type: integer
-          format: int32
-        cacheTime:
-          nullable: true
-          type: integer
-          format: int32
-    Transaction:
-      type: object
-      required:
-        - id
-        - reference
-        - authCode
-        - total
-        - apiResponse
-        - status
-        - confirmed
-        - currencyId
-        - userId 
-        - typeId
-        - createdDate
-        - partnerId
-        - exchangeRate
-        - reverseRate
-        - cancelled
-        - paymentGatewayId
-        - wallet
-      properties:
-        id:
-          type: integer
-          format: int32          
-        reference:
-          type: string
-        authCode:
-          type: string
-        createdDate:
-          type: string          
-        apiResponse:
-          type: string
-          nullable: true
-        wallet:
-          type: boolean
-        cancelled:
-          type: boolean          
-        confirmed:
-          type: boolean          
-        currencyId:
-          type: integer
-          format: int32
-        partnerId:
-          type: integer
-          format: int32
-        userId:
-          type: integer
-          format: int32
-        typeId:
-          type: integer
-          format: int32
-        total:
-          type: integer
-          format: int32          
-        paymentGatewayId:
-          type: integer
-          format: int32
-        exchangeRate:
-          type: integer
-          format: int32 
-        reverseRate:
-          type: integer
-          format: int32          
-        cacheTime:
-          nullable: true
-          type: integer
-          format: int32          
-    TranslationList:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: "#/components/schemas/Translation"
-        warnings:
-          type: array
-          items:
-            type: string
-    TranslationPayload:
-      required:
-        - key
-        - text
-      type: object
-      properties:
-        key:
-          type: string
-        text:
-          type: string
-    TransactionResponse:
-      required:
-        - transactionId
-      type: object
-      properties:
-        transactionId:
-          type: string       
-    BetTransaction:
-      required:
-        - userId
-        - amount
-        - typeId
-        - partnerId
-        - gatewayId
-        - reference
-      type: object
-      properties:
-        userId:
-          type: integer
-          format: int32
-          example: 580269
-        amount:
-          type: float
-          example: 1000
-        typeId:
-          type: integer
-          format: int32
-          example: 21
-        partnerId:
-          type: integer
-          format: int32
-          example: 23
-        gatewayId:
-          type: integer
-          format: int32
-          example: 1
-        reference:
-          type: string
-          example: "Betslip-u"
-    DepositTransaction:
-      required:
-        - userId
-        - amount
-        - typeId
-        - partnerId
-        - gatewayId
-        - reference
-        - code
-      type: object
-      properties:
-        userId:
-          type: integer
-          format: int32
-          example: 580269
-        amount:
-          type: float
-          example: 1000
-        typeId:
-          type: integer
-          format: int32
-          example: 21
-        partnerId:
-          type: integer
-          format: int32
-          example: 23
-        gatewayId:
-          type: integer
-          format: int32
-          example: 1
-        code:
-          type: string
-          example: "Cash"
-        reference:
-          type: string
-          example: "Add-Funds"
-    RefundTransaction:
-      required:
-        - userId
-        - amount
-        - betId
-        - typeId
-        - partnerId
-        - gatewayId
-        - reference
-        - code
-        - reason 
-      type: object
-      properties:
-        userId:
-          type: integer
-          format: int32
-          example: 580269
-        amount:
-          type: float
-          example: 1000
-        betId:
-          type: integer
-          format: int32
-          example: 11657
-        typeId:
-          type: integer
-          format: int32
-          example: 21
-        partnerId:
-          type: integer
-          format: int32
-          example: 23
-        gatewayId:
-          type: integer
-          format: int32
-          example: 1
-        reason:
-          type: string
-          example: "Liability EUR 21.74 is over Customer Bet liability limit EUR 20 on Customer level, Selection: uof:3/sr:sport:2/223/1714?hcp=-10.5, Match: 18927858"
-        code:
-          type: string
-          example: "MTS-Reject_684"
-        reference:
-          type: string
-          example: "Sportsbook-Refund_1"
-    WinTransaction:
-      required:
-        - userId
-        - amount
-        - betId
-        - typeId
-        - partnerId
-        - gatewayId
-        - reference
-      type: object
-      properties:
-        userId:
-          type: integer
-          format: int32
-          example: 580269
-        amount:
-          type: float
-          example: 1000
-        betId:
-          type: integer
-          format: int32
-          example: 11657
-        typeId:
-          type: integer
-          format: int32
-          example: 21
-        partnerId:
-          type: integer
-          format: int32
-          example: 23
-        gatewayId:
-          type: integer
-          format: int32
-          example: 1
-        reference:
-          type: string
-          example: "Sportsbook-Win_1"           
-          
-    User:
-      type: object
-      required:
-        - id
-        - email
-        - firstName
-        - lastName
-      properties:
-        id:
-          type: integer
-          format: int32
-          example: "1"
-        email:
-          type: string
-          example: "api@lot.to"
-          format: email
-        firstName:
-          type: string
-          example: "Api"
-        lastName:
-          type: string
-          example: "Demo"
-        isEmailVerified:
-          type: boolean
-        isTempPassword:
-          type: boolean
-        profile:
-          $ref: "#/components/schemas/Profile"
-        title:
-          type: string
-        wallet:
-          $ref: "#/components/schemas/Wallet"
-    UserDetails:
-      type: object
-      required:
-        - userId
-        - username
-      properties:
-        userId:
-          type: integer
-          format: int32
-          example: "1"
-        username:
-          type: string
-          example: "adminUs3r"
-    Venue:
-      type: object
-      required:
-        - id
-        - key
-        - name
-      properties:
-        id:
-          type: integer
-          format: int32
-        key:
-          type: string
-        name:
-          type: string
-    Wallet:
-      type: object
-      required:
-        - id
-        - amount
-        - userId
-      properties:
-        reservedTotal:
-          description: "The wallet non-withdrawable and reserved total in pence"
-          type: integer
-          format: int32
-        total:
-          description: "The wallet total in pence"
-          type: integer
-          format: int32
-        status:
-          type: boolean
-    ToteBet:
-      type: object
-      required:
-        - poolId
-        - betTypeId
-        - ticketId
-        - stake
-        - selectionId
-        - lost
-        - settled
-        - dividend
-        - winAmount
-        - winTransactionId
-        - refundTransactionId
-        - selection
-        - dividend
-      properties:
-        stake:
-          type: integer
-          example: 100
-        dividend:
-          type: integer
-          example: 100
-        winAmount:
-          type: integer
-          example: 100          
-        poolId:
-          type: integer
-          example: 1
-        betTypeId:
-          type: integer
-          example: 4
-        selectionId:
-          type: integer
-          example: 4
-        ticketId:
-          type: integer
-          example: 4          
-        winTransactionId:
-          type: integer
-          example: 4
-        refundTransactionId:
-          type: integer
-          example: 4
-        lost:
-          type: boolean
-          example: true 
-        settled:
-          type: boolean
-          example: true
-        dividend:
-          type: number
-          format: float
-          null: true
-        tsn:
-          type: string
-          example: "CC05BE1B8C4E"
-        winAmount:
-          type: integer
-          example: 0
-        selection:
-          $ref: "#/components/schemas/Selection"
-    BetslipBet:
-      type: object
-      required:
-        - poolId
-        - betTypeId
-        - stake
-        - selection
-      properties:
-        stake:
-          type: integer
-          example: 100
-        poolId:
-          type: integer
-          example: 1
-        betTypeId:
-          type: integer
-          example: 1
-        selection:
-          $ref: "#/components/schemas/BetslipSelection"
-    BetslipLeg:
-      type: object
-      required:
-        - runnerIds
-        - legId
-        - runners
-      properties:
-        legId:
-          type: integer
-          example: 2
-        runnerIds:
-          type: array
-          example: [782]
-        runners:
-          type: array
-          items:
-            $ref: "#/components/schemas/BetslipRunner"
-    BetslipRunner:
-      type: object
-      required:
-        - runnerId
-        - position
-      properties:
-        runnerId:
-          type: integer
-          example: 24543
-        position:
-          type: integer
-          example: 1
-    BetslipSelection:
-      type: object
-      required:
-        - legs
-      properties:
-        legs:
-          type: array
-          items: 
-            $ref: "#/components/schemas/BetslipLeg"
-    BetslipTicket:
-      type: object 
-      required:
-        - bets
-      properties:
-        totalStake:
-          type: integer
-          example: 100
-        bets: 
-          type : array
-          items: 
-            $ref: "#/components/schemas/BetslipBet"
-          example: 1
-    BetType:
-      type: object
-      required:
-        - id
-        - shortName
-        - longName
-      properties:
-        id:
-          type: integer
-          example: 1
-        shortName:
-          type: string
-          example: "EW"
-        longName :
-          type: string
-          example: "EACH WAY"
-    Breakdown:
-      type: object
-      required:
-        - runnerId
-        - legId
-        - selectionId
-        - order
-        - lost 
-        - settled
-      properties:
-        legId:
-          type: integer
-          example: 2
-        runnerId:
-          type: integer
-          example: 2332
-        selectionId:
-          type: integer
-          example: 231
-        order:
-          type: integer
-          example: 23
-        lost:
-          type: boolean
-          example: true 
-        settled:
-          type: boolean
-          example: true         
-    Card:
-      type: object
-      required:
-        - id
-        - meet
-        - performance
-        - raceCount
-        - postTime
-        - name
-        - maxRunner
-        - countryCode
-        - courseId
-        - extraData
-        - cardType
-        - performanceType
-        - provider
-        - track
-        - races
-      properties:
-        id:
-          type: integer
-          example: 1
-        meet:
-          type: integer
-          example: 48
-        performance:
-          type: integer
-          example: 161
-        raceCount:
-          type: integer
-          example: 6
-        postTime:
-          type: string
-          example: "17:55:00"
-        name:
-          type: string
-          example: "STRATFORD"
-        maxRunner:
-          type: integer
-          example: 24
-        countryCode:
-          type: string
-          example: "RP"
-        courseId:
-          type: integer
-          example: 1
-        cardType:
-          $ref: "#/components/schemas/CardType"
-        performanceType:
-          $ref: "#/components/schemas/PerformanceType"
-        provider:
-          $ref: "#/components/schemas/Provider"
-        races:
-          type: array
-          items:
-            $ref: "#/components/schemas/Race"
-    CardType:
-      type: object
-      required:
-        - id
-        - name
-      properties:
-        id:
-          type: integer
-          example: 1
-        name:
-          type: string
-          example: "THOROUGHBRED"
-    Leg:
-      type: object
-      required:
-        - runnerIds
-        - legId
-      properties:
-        runnerIds:
-          type: array
-          example: [1,5]
-        legId:
-          type: integer
-          example: 23
-        breakdowns:
-          type: array 
-    PerformanceType:
-      type: object
-      required:
-        - id
-        - name
-      properties:
-        id:
-          type: integer
-          example: 1
-        name:
-          type: string
-          example: "MAT"
-    Pool:
-      type: object
-      required:
-        - id
-        - cardId
-        - bettingOn
-        - cashingOn
-        - total
-        - scratched
-        - poolType
-        - betTypes
-      properties:
-        id:
-          type: integer
-          example: 1
-        cardId:
-          type: integer
-          example: 1
-        bettingOn:
-          type: boolean
-          example: false
-        cashingOn:
-          type: boolean
-          example: true
-        cancellingOn:
-          type: boolean
-          example: false
-        total:
-          type: integer
-          example: 0
-          nullable: true
-        scratched:
-          type: boolean
-          example: false
-          nullable: true
-        poolType:
-          $ref: "#/components/schemas/PoolType"
-        betTypes:
-          type: array
-          items:
-            type: object
-            required:
-              - id
-              - shortName
-              - longName
-            properties:
-              id:
-                type: integer
-                example: 1
-              shortName:
-                type: string
-                example: "WIN"
-              longName:
-                type: string
-                example: "WIN"
-    PoolType:
-      type: object
-      required:
-        - id
-        - key
-        - name
-        - abbreviation
-        - numLeg
-        - numPositions
-        - maxNumPositions
-      properties:
-        id:
-          type: integer
-          example: 1
-        key:
-          type: integer
-          example: 1
-        name:
-          type: string
-          example: "WIN"
-        abbreviation:
-          type: string
-          example: "WIN"
-        numLeg:
-          type: integer
-          example: 1
-        numPositions:
-          type: integer
-          example: 1
-        maxNumPositions:
-          type: integer
-    Provider:
-      type: object
-      required:
-        - id
-        - name
-      properties:
-        id:
-          type: integer
-          example: 1
-        name:
-          type: string
-          example: "GBI"
-    Selection:
-      type: object
-      required:
-        - legs
-      properties:
-        id:
-          type: integer
-          example: 14
-        key: 
-          type: string
-          example: "1:[1,3]-[2,3]-[2,6]"
-        breakdowns:
-          type: array
-          items: 
-            $ref: "#/components/schemas/Breakdown"
-    Race:
-      type: object
-      required:
-        - id
-        - distanceText
-        - enabled
-        - handicap
-        - numPositions
-        - name
-        - postTime
-        - cardId
-        - raceType
-        - raceStatus
-        - toteRaceType
-        - runners
-      properties:
-        id:
-          type: integer
-          example: 1
-        course:
-          type: string
-          example: "T"
-        distance:
-          type: string
-          example: "3590"
-        distanceText:
-          type: string
-          example: "2m 70yds"
-        distanceUnit:
-          type: string
-          example: "Yards"
-        enabled:
-          type: boolean
-          example: true
-        handicap:
-          type: boolean
-          example: false
-        numPositions:
-          type: integer
-          example: 3
-        name:
-          type: string
-          example: "Watch Racing TV Now Novices' Hur"
-        postTime:
-          type: string
-          example: "15:15:00+02:00"
-        cardId:
-          type: integer
-          example: 27
-        raceType:
-          $ref: "#/components/schemas/RaceType"
-        toteRaceType:
-          $ref: "#/components/schemas/ToteRaceType"
-        runners:
-          type: array
-          items:
-            $ref: "#/components/schemas/Runner"
-    RaceType:
-      type: object 
-      required:
-        - id
-        - name 
-      properties:
-        id:
-          type: integer
-          example: 1
-        name: 
-          type: string 
-          example: "Flat"
-    Runner:
-      type: object
-      required:
-        - id
-        - name
-        - jockeyName
-        - position
-        - scratched
-        - weightCarried
-      properties:
-        id:
-          type: integer
-          example: 1
-        name:
-          type: string
-          example: "Santani"
-        jockeyName:
-          type: string
-          example: "B Poste"
-        position:
-          type: integer
-          example: 1
-        trainer:
-          type: string
-          example: "Pam Sly"
-        scratched:
-          type: boolean
-          example: false
-        weightCarried:
-          type: integer
-          example: 155
-        morningLineOdds:
-          type: string
-          example: "11/4"
-        showPrice:
-          type: string
-          example: "18/1"
-        horseAge:
-          type: integer
-          example: 5
-        rpRating:
-          type: integer
-          example: 63
-        topSpeed:
-          type: boolean
-          example: true 
-        formFigures:
-          type: string 
-          example: "5F-074"
-        officialRating:
-          type: string
-          example: 94 
-        jockeySilk:
-          type: string
-          example: "213809.gif"
-    ToteTrack:
-      type: object
-      required:
-        - id
-        - name
-      properties:
-        id:
-          type: integer
-          example: 1
-        name:
-          type: string
-          example: "GBI"
-    ToteCourse:
-      type: object
-      required:
-        - id
-        - code
-        - key
-        - name
-        - type
-        - countryCode
-      properties:
-        id:
-          type: integer
-          example: 1
-        code:
-          type: string
-          example: "Dusseldorf"
-        key:
-          type: string
-          example: "RP-240"
-        name:
-          type: string
-          example: "DUSSELDORF"
-        type:
-          type: string
-          example: "B"
-        countryCode:
-          type: string
-          example: "GB"
-        track:
-          $ref: "#/components/schemas/ToteTrack"
-    ToteRaceType:
-      type: object
-      required:
-        - id
-        - name
-      properties:
-        id:
-          type: integer
-          example: 1
-        name:
-          type: string
-          example: "JUMP"
-    ToteTicket:
-      type: object 
-      required:
-       - bets
-      properties:
-        id:
-          type: integer
-          example: 1
-        userId:
-          type: integer
-          example: 1000
-        transactionId:
-          type: integer
-          example: 1190
-        createdDate:
-          type: "string"
-          example: "2019-08-12 15:37:48"
-        totalStake:
-          type: integer
-          example: 300
-        processed:
-          type: boolean
-          example: false
-        partnerId:
-          type: integer
-          example: 23
-        currencyId:
-          type: integer
-          example: 1
-        bets: 
-          type : array
-          items: 
-            $ref: "#/components/schemas/ToteBet"
-          example: 1
+          description: maximum number of results to return
+      responses:
+        '200':
+          description: Returns an array of pool objectsp
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Pool'
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: '#/definitions/Error'
+  '/tote/races/{id}':
+    get:
+      description: Return a race object by its given identifier
+      summary: Get a Tote race by its ID
+      tags:
+        - Races
+      operationId: ToteRacesByIdGet
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: ''
+      responses:
+        '200':
+          description: Returns a race object
+          schema:
+            $ref: '#/definitions/Race'
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: '#/definitions/Error'
+        '404':
+          description: Standardised not found response
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+  Category:
+    title: Category
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+      key:
+        type: string
+      name:
+        type: string
+      eventTally:
+        type: integer
+        format: int32
+    required:
+      - id
+      - key
+      - name
+  Component:
+    title: Component
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+      name:
+        type: string
+      key:
+        type: string
+      basePrice:
+        type: number
+        format: double
+      cutoffTime:
+        type: integer
+        format: int32
+      lottery:
+        $ref: '#/definitions/Lottery'
+    required:
+      - id
+      - name
+      - key
+      - basePrice
+      - cutoffTime
+      - lottery
+  Country:
+    title: Country
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+      continent:
+        type: string
+      isoCode:
+        type: string
+      iso3Code:
+        type: string
+      name:
+        type: string
+    required:
+      - id
+      - isoCode
+      - name
+  Currency:
+    title: Currency
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+      exchangeRate:
+        type: number
+        format: double
+      name:
+        type: string
+      reverseRate:
+        type: number
+        format: double
+      roundingFactor:
+        type: number
+        format: double
+      shortName:
+        type: string
+      symbol:
+        type: string
+    required:
+      - id
+      - shortName
+      - symbol
+  Date:
+    title: Date
+    type: object
+    properties:
+      timezone:
+        example: UTC
+        type: string
+      date:
+        example: '2018-01-01 12:00:00'
+        type: string
+        format: date-time
+      human:
+        example: '01/01/2018 12:00'
+        type: string
+      time:
+        example: '12:00'
+        type: string
+        pattern: '^\d{2}:\d{2}$'
+      timestamp:
+        example: 1514808000
+        type: integer
+        format: int32
+    required:
+      - date
+      - human
+      - time
+      - timestamp
+  Draw:
+    title: Draw
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+      cutoffDate:
+        $ref: '#/definitions/Date'
+      localDate:
+        $ref: '#/definitions/Date'
+      lotteryDate:
+        $ref: '#/definitions/Date'
+      drawNumber:
+        example: 1021
+        type: integer
+        format: int32
+      numbers:
+        type: string
+      extraNumbers:
+        type: string
+      jackpot:
+        example: 1500000
+        type: integer
+        format: int64
+      humanJackpot:
+        example: 1.5M
+        type: string
+      humanDate:
+        example: 'Monday @ 18:00'
+        type: string
+    required:
+      - id
+      - cutoffDate
+      - localDate
+      - lotteryDate
+      - drawNumber
+      - numbers
+      - jackpot
+  Error:
+    title: Error
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      error:
+        type: string
+      warnings:
+        type: array
+        items:
+          $ref: '#/definitions/Warning'
+    required:
+      - code
+      - error
+  MissingEmail:
+    title: MissingEmail
+    type: object
+    properties:
+      code:
+        example: ERR1000
+        type: string
+      error:
+        example: Missing email address
+        type: string
+    required:
+      - code
+      - error
+  MissingPassword:
+    title: MissingPassword
+    type: object
+    properties:
+      code:
+        example: ERR1001
+        type: string
+      error:
+        example: Missing password
+        type: string
+    required:
+      - code
+      - error
+  MissingFirstname:
+    title: MissingFirstname
+    type: object
+    properties:
+      code:
+        example: ERR1002
+        type: string
+      error:
+        example: Missing firstname
+        type: string
+    required:
+      - code
+      - error
+  MissingLastname:
+    title: MissingLastname
+    type: object
+    properties:
+      code:
+        example: ERR1003
+        type: string
+      error:
+        example: Missing lastname
+        type: string
+    required:
+      - code
+      - error
+  MissingDOB:
+    title: MissingDOB
+    type: object
+    properties:
+      code:
+        example: ERR1004
+        type: string
+      error:
+        example: Missing date of birth
+        type: string
+    required:
+      - code
+      - error
+  MissingLine1:
+    title: MissingLine1
+    type: object
+    properties:
+      code:
+        example: ERR1005
+        type: string
+      error:
+        example: Missing first line address
+        type: string
+    required:
+      - code
+      - error
+  MissingCity:
+    title: MissingCity
+    type: object
+    properties:
+      code:
+        example: ERR1006
+        type: string
+      error:
+        example: Missing city
+        type: string
+    required:
+      - code
+      - error
+  MissingPostcode:
+    title: MissingPostcode
+    type: object
+    properties:
+      code:
+        example: ERR1007
+        type: string
+      error:
+        example: Missing postcode
+        type: string
+    required:
+      - code
+      - error
+  MissingCountryIso:
+    title: MissingCountryIso
+    type: object
+    properties:
+      code:
+        example: ERR1008
+        type: string
+      error:
+        example: Missing country ISO code
+        type: string
+    required:
+      - code
+      - error
+  MissingPhoneNumber:
+    title: MissingPhoneNumber
+    type: object
+    properties:
+      code:
+        example: ERR1009
+        type: string
+      error:
+        example: Missing phone number
+        type: string
+    required:
+      - code
+      - error
+  MissingSecurityAnswer:
+    title: MissingSecurityAnswer
+    type: object
+    properties:
+      code:
+        example: ERR1010
+        type: string
+      error:
+        example: Missing security answer
+        type: string
+    required:
+      - code
+      - error
+  MissingSecurityQuestion:
+    title: MissingSecurityQuestion
+    type: object
+    properties:
+      code:
+        example: ERR1011
+        type: string
+      error:
+        example: Missing security question
+        type: string
+    required:
+      - code
+      - error
+  MissingUsernameEmail:
+    title: MissingUsernameEmail
+    type: object
+    properties:
+      code:
+        example: ERR1012
+        type: string
+      error:
+        example: Missing username / email
+        type: string
+    required:
+      - code
+      - error
+  InvalidEmail:
+    title: InvalidEmail
+    type: object
+    properties:
+      code:
+        example: ERR2050
+        type: string
+      error:
+        example: Invalid email address
+        type: string
+    required:
+      - code
+      - error
+  InvalidUsername:
+    title: InvalidUsername
+    type: object
+    properties:
+      code:
+        example: ERR2060
+        type: string
+      error:
+        example: Invalid username
+        type: string
+    required:
+      - code
+      - error
+  InvalidDOBFormat:
+    title: InvalidDOBFormat
+    type: object
+    properties:
+      code:
+        example: ERR2070
+        type: string
+      error:
+        example: Invalid date format for Date of Birth. Accepted format is yyyy-mm-dd
+        type: string
+    required:
+      - code
+      - error
+  InvalidDOB:
+    title: InvalidDOB
+    type: object
+    properties:
+      code:
+        example: ERR2080
+        type: string
+      error:
+        example: Invalid date of birth
+        type: string
+    required:
+      - code
+      - error
+  InvalidRequest:
+    title: InvalidRequest
+    type: object
+    properties:
+      code:
+        example: ERR2020
+        type: string
+      error:
+        example: Invalid request
+        type: string
+    required:
+      - code
+      - error
+  KycResponse:
+    title: KycResponse
+    type: object
+    properties:
+      success:
+        example: false
+        type: boolean
+  KycUpload:
+    title: KycUpload
+    type: object
+    properties:
+      source:
+        example: 3
+        type: integer
+        format: int32
+      files:
+        type: object
+  DuplicateEmail:
+    title: DuplicateEmail
+    type: object
+    properties:
+      code:
+        example: ERR2000
+        type: string
+      error:
+        example: Email already in use
+        type: string
+    required:
+      - code
+      - error
+  DuplicateUsername:
+    title: DuplicateUsername
+    type: object
+    properties:
+      code:
+        example: ERR2001
+        type: string
+      error:
+        example: Username already in use
+        type: string
+    required:
+      - code
+      - error
+  InvalidCountryIso:
+    title: InvalidCountryIso
+    type: object
+    properties:
+      code:
+        example: ERR2021
+        type: string
+      error:
+        example: Invalid country ISO
+        type: string
+    required:
+      - code
+      - error
+  CountryNotFound:
+    title: CountryNotFound
+    type: object
+    properties:
+      code:
+        example: ERR2022
+        type: string
+      error:
+        example: Specified country not found
+        type: string
+    required:
+      - code
+      - error
+  InvalidGender:
+    title: InvalidGender
+    type: object
+    properties:
+      code:
+        example: ERR2024
+        type: string
+      error:
+        example: Invalid gender
+        type: string
+    required:
+      - code
+      - error
+  InvalidFirstname:
+    title: InvalidFirstname
+    type: object
+    properties:
+      code:
+        example: ERR2025
+        type: string
+      error:
+        example: Invalid characters in firstname
+        type: string
+    required:
+      - code
+      - error
+  InvalidLastname:
+    title: InvalidLastname
+    type: object
+    properties:
+      code:
+        example: ERR2026
+        type: string
+      error:
+        example: Invalid characters in lastname
+        type: string
+    required:
+      - code
+      - error
+  InvalidLogin:
+    title: InvalidLogin
+    type: object
+    properties:
+      code:
+        example: ERR2027
+        type: string
+      error:
+        example: Invalid login credentials provided
+        type: string
+    required:
+      - code
+      - error
+  InvalidResetToken:
+    title: InvalidResetToken
+    type: object
+    properties:
+      code:
+        example: ERR2200
+        type: string
+      error:
+        example: Invalid or missing reset token parameter
+        type: string
+    required:
+      - code
+      - error
+  PasswordComplexity:
+    title: PasswordComplexity
+    type: object
+    properties:
+      code:
+        example: ERR2250
+        type: string
+      error:
+        example: >-
+          The password must be 8 to 16 characters long and must have the
+          following: one uppercase & lowercase letters and a special character
+        type: string
+    required:
+      - code
+      - error
+  AgeNotMet:
+    title: AgeNotMet
+    type: object
+    properties:
+      code:
+        example: ERR2002
+        type: string
+      error:
+        example: Minimum age requirement not met
+        type: string
+    required:
+      - code
+      - error
+  UserVerificationEmail:
+    title: UserVerificationEmail
+    type: object
+    properties:
+      code:
+        example: ERR2100
+        type: string
+      error:
+        example: >-
+          A user already exists with the details provided. If you have forgotten
+          your password please use the password reset functionality.
+        type: string
+    required:
+      - code
+      - error
+  AddressWarning:
+    title: AddressWarning
+    type: object
+    properties:
+      code:
+        example: ERR2101
+        type: string
+      error:
+        example: There might already be a user registered on the same address.
+        type: string
+    required:
+      - code
+      - error
+  UserWarning:
+    title: UserWarning
+    type: object
+    properties:
+      code:
+        example: ERR2102
+        type: string
+      error:
+        example: A user with the same name already exists.
+        type: string
+    required:
+      - code
+      - error
+  SystemException:
+    title: SystemException
+    type: object
+    properties:
+      code:
+        example: SYS1000
+        type: string
+      error:
+        example: A system error occurred. Please contact an administrator.
+        type: string
+    required:
+      - code
+      - error
+  InvalidToken:
+    title: InvalidToken
+    type: object
+    properties:
+      code:
+        example: SYS2000
+        type: string
+      error:
+        example: Invalid token
+        type: string
+    required:
+      - code
+      - error
+  LoginTimeout:
+    title: LoginTimeout
+    type: object
+    properties:
+      code:
+        example: SYS3000
+        type: string
+      error:
+        example: Too many failed login attempts
+        type: string
+    required:
+      - code
+      - error
+  GenericErrorCode:
+    title: GenericErrorCode
+    type: object
+    properties:
+      code:
+        example: SYS9999
+        type: string
+      error:
+        example: Missing or invalid field specified
+        type: string
+    required:
+      - code
+      - error
+  UserExcluded:
+    title: UserExcluded
+    type: object
+    properties:
+      code:
+        example: ERR3000
+        type: string
+      error:
+        example: This user has been excluded
+        type: string
+    required:
+      - code
+      - error
+  EmailNotFound:
+    title: EmailNotFound
+    type: object
+    properties:
+      code:
+        example: ERR3100
+        type: string
+      error:
+        example: Email specified does not exist
+        type: string
+    required:
+      - code
+      - error
+  TooManyLoginFails:
+    title: TooManyLoginFails
+    type: object
+    properties:
+      code:
+        example: ERR3100
+        type: string
+      error:
+        example: Too many failed login attempts
+        type: string
+    required:
+      - code
+      - error
+  Event:
+    title: Event
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+      key:
+        type: string
+      categoryId:
+        type: integer
+        format: int32
+      nextLiveTime:
+        type: string
+      scheduledTime:
+        type: string
+      startTime:
+        type: string
+      isTimeDecided:
+        type: boolean
+      sportId:
+        type: integer
+        format: int32
+      tournamentId:
+        type: integer
+        format: int32
+      tournamentRoundId:
+        type: integer
+        format: int32
+      name:
+        type: string
+      score:
+        $ref: '#/definitions/EventScore'
+      status:
+        $ref: '#/definitions/EventStatus'
+      venue:
+        $ref: '#/definitions/Venue'
+      competitors:
+        type: array
+        items:
+          $ref: '#/definitions/Competitor'
+      markets:
+        type: array
+        items:
+          $ref: '#/definitions/Market'
+    required:
+      - id
+      - key
+      - categoryId
+      - scheduledTime
+      - startTime
+      - isTimeDecided
+      - sportId
+      - name
+      - score
+      - status
+      - competitors
+  EventClock:
+    title: EventClock
+    type: object
+    properties:
+      matchTime:
+        type: string
+      remaining:
+        type: string
+      remainingInPeriod:
+        type: string
+      stopped:
+        type: boolean
+      lastUpdated:
+        type: string
+    required:
+      - matchTime
+      - remaining
+      - remainingInPeriod
+      - stopped
+      - lastUpdated
+  EventScore:
+    title: EventScore
+    type: object
+    properties:
+      home:
+        type: integer
+        format: int32
+      away:
+        type: integer
+        format: int32
+      homePeriodScore:
+        type: integer
+        format: int32
+      awayPeriodScore:
+        type: integer
+        format: int32
+      clock:
+        $ref: '#/definitions/EventClock'
+    required:
+      - home
+      - away
+      - homePeriodScore
+      - awayPeriodScore
+      - clock
+  EventStatus:
+    title: EventStatus
+    type: object
+    properties:
+      name:
+        type: string
+      isLive:
+        type: boolean
+    required:
+      - name
+      - isLive
+  Game:
+    title: Game
+    type: object
+    properties:
+      name:
+        example: Spain's Bonoloto
+        type: string
+      key:
+        example: bonoloto
+        type: string
+      type:
+        example: classic
+        type: string
+      url:
+        example: spains-bonoloto
+        type: string
+      nextDraw:
+        $ref: '#/definitions/Draw'
+      settings:
+        example:
+          gameColour: '#34a749'
+          continentCode: EU
+        type: object
+        additionalProperties:
+          type: string
+      components:
+        type: array
+        items:
+          $ref: '#/definitions/Component'
+    required:
+      - name
+      - key
+      - url
+      - nextDraw
+      - settings
+      - components
+  Login:
+    title: Login
+    type: object
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+      - email
+      - password
+  Lottery:
+    title: Lottery
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+      key:
+        example: bonoloto
+        type: string
+      name:
+        example: Spain's Bonoloto
+        type: string
+      days:
+        example: '1,2,3,4,5,6'
+        type: string
+      humanDays:
+        example: 'Mon, Tue, Wed, Thu, Fri, Sat'
+        type: string
+      time:
+        example: '19:00'
+        type: string
+        pattern: '^\d{2}:\d{2}$'
+      numbers:
+        $ref: '#/definitions/Numbers'
+    required:
+      - id
+      - key
+      - name
+      - days
+      - humanDays
+      - time
+      - numbers
+  Note:
+    title: Note
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+      text:
+        type: string
+      userId:
+        type: integer
+        format: int32
+      date:
+        type: string
+        format: date
+    required:
+      - id
+      - text
+      - userId
+      - date
+  Partner:
+    title: Partner
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+      name:
+        type: string
+      commission:
+        type: integer
+        format: int32
+      contract:
+        type: boolean
+      user:
+        $ref: '#/definitions/User'
+    required:
+      - id
+      - name
+      - commission
+      - contract
+      - user
+  Profile:
+    title: Profile
+    type: object
+    properties:
+      addressId:
+        type: integer
+        format: int32
+      contactNumber:
+        type: string
+      country:
+        $ref: '#/definitions/Country'
+      countryId:
+        type: integer
+        format: int32
+      currency:
+        $ref: '#/definitions/Currency'
+      currencyId:
+        type: integer
+        format: int32
+      dateOfBirth:
+        type: string
+        format: date
+      mobileNumber:
+        type: string
+      timeZone:
+        type: string
+    required:
+      - addressId
+      - countryId
+      - currencyId
+      - dateOfBirth
+  Register:
+    title: Register
+    type: object
+    properties:
+      email:
+        example: example@mail.com
+        type: string
+      password:
+        description: >-
+          Minimum of eight (8) characters in length. Must containt at least 1 of
+          the following: Uppercase letter (A-Z), lowercase (a-z), number (0-9)
+          and any special character.
+        example: Pas$w0rD!
+        type: string
+      username:
+        description: >-
+          Must be a minimum of 5 characters and a maximum 32 characters.Can only
+          contain letters, numbers, periods (.), and underscores (_).
+        example: lotto_user
+        type: string
+      firstName:
+        example: John
+        type: string
+      lastName:
+        example: Doe
+        type: string
+      dob:
+        example: '1989-03-20'
+        type: string
+      line1:
+        example: 10 Downing Street
+        type: string
+      line2:
+        example: Westminster
+        type: string
+      city:
+        example: London
+        type: string
+      county:
+        example: Greater London
+        type: string
+      postcode:
+        example: SW1A 2AA
+        type: string
+      countryIso:
+        description: 2 letter ISO code of the country of residence
+        example: GB
+        type: string
+      phoneNumber:
+        description: >-
+          Your mobile or landline phone number. This is optional by default but
+          can be set as a required field.
+        type: string
+      marketingPrefs:
+        description: >-
+          An array of communication preferences the player wants to opt in to
+          receive. Must be one of: email, sms, phone
+        example:
+          - email
+          - sms
+          - phone
+        type: object
+      security:
+        description: A multi-nested array of security question and answer pairs
+        type: array
+        items:
+          $ref: '#/definitions/Security'
+    required:
+      - email
+      - password
+      - firstName
+      - lastName
+      - dob
+      - line1
+      - city
+      - county
+      - postcode
+      - countryIso
+  Security:
+    title: Security
+    type: object
+    properties:
+      question:
+        type: string
+      answer:
+        type: string
+  Sport:
+    title: Sport
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+      code:
+        type: string
+      icon:
+        type: string
+      key:
+        type: string
+      name:
+        type: string
+      url:
+        type: string
+      categories:
+        type: array
+        items:
+          $ref: '#/definitions/Category'
+      tournaments:
+        type: array
+        items:
+          $ref: '#/definitions/Tournament'
+    required:
+      - id
+      - key
+      - name
+      - url
+  SportBet:
+    title: SportBet
+    type: object
+    properties:
+      id:
+        type: number
+        format: double
+      transactionId:
+        type: number
+        format: double
+      userId:
+        type: number
+        format: double
+      createdDate:
+        type: string
+      amount:
+        type: number
+        format: double
+      odds:
+        type: number
+        format: double
+      isProcessed:
+        type: boolean
+      isWinning:
+        type: boolean
+      status:
+        type: boolean
+      sent:
+        type: boolean
+      winTransactionId:
+        type: number
+        format: double
+      event:
+        $ref: '#/definitions/Event1'
+      market:
+        $ref: '#/definitions/Market1'
+      outcome:
+        $ref: '#/definitions/Outcome'
+    required:
+      - id
+      - transactionId
+      - userId
+      - createdDate
+      - amount
+      - odds
+      - status
+      - event
+      - market
+      - outcome
+  SportEvents:
+    title: SportEvents
+    type: object
+    properties:
+      live:
+        type: array
+        items:
+          $ref: '#/definitions/Event'
+      upcoming:
+        type: array
+        items:
+          $ref: '#/definitions/Event'
+  SportStatus:
+    title: SportStatus
+    type: object
+    properties:
+      liveodds:
+        type: boolean
+      pre:
+        type: boolean
+    required:
+      - liveodds
+      - pre
+  ResetToken:
+    title: ResetToken
+    type: object
+    properties:
+      resetToken:
+        example: 2TqB0eDzqqXA5yKk4NhYqVdfltLHgwH4
+        type: string
+  ResetTokenRequest:
+    title: ResetTokenRequest
+    type: object
+    properties:
+      resetToken:
+        example: 2TqB0eDzqqXA5yKk4NhYqVdfltLHgwH4
+        type: string
+      password:
+        example: Tsg5x@Hx3
+        type: string
+  RefreshToken:
+    title: RefreshToken
+    type: object
+    properties:
+      refreshToken:
+        example: >-
+          cV1UhvLVwNuVja9uYwr2eKIWGZZzyvNYo2R4co6xtTMTIph83FqTwHQVcp3zObCjxT5dentSS0VEFWRC
+        type: string
+  Token:
+    title: Token
+    type: object
+    properties:
+      token:
+        example: >-
+          eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbiI6Ii1ERU1PLSIsImF1ZCI6ImFwaS5kZXYubG90LnRvIiwiZXhwIjoxNTU3MTY0MjQ0LCJpc3MiOiJsb3QudG8vdjEvYXBpLXVzZXJzIiwic3ViIjoiMSIsImp0aSI6IjFhYTRhMWZiLTczZmMtNDEyYS1iZGIyLWY2MWM2ODkwY2ZkMSIsImlhdCI6MTU1NzE2MDY0NH0.0KfFgw-7vKyO2b4uJkRsy0lusqIx3v_aGtv57JcuhbU
+        type: string
+  Tournament:
+    title: Tournament
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+      name:
+        type: string
+      key:
+        type: string
+      eventTally:
+        type: integer
+        format: int32
+      sportId:
+        type: integer
+        format: int32
+      categoryId:
+        type: integer
+        format: int32
+    required:
+      - id
+      - name
+      - key
+      - sportId
+      - categoryId
+  Translation:
+    title: Translation
+    type: object
+    properties:
+      key:
+        type: string
+      text:
+        type: string
+      isExtended:
+        type: boolean
+      languageId:
+        type: integer
+        format: int32
+      partnerId:
+        type: integer
+        format: int32
+      cacheTime:
+        type: integer
+        format: int32
+    required:
+      - key
+      - text
+  Transaction:
+    title: Transaction
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+      reference:
+        type: string
+      authCode:
+        type: string
+      createdDate:
+        type: string
+      apiResponse:
+        type: string
+      wallet:
+        type: boolean
+      cancelled:
+        type: boolean
+      confirmed:
+        type: boolean
+      currencyId:
+        type: integer
+        format: int32
+      partnerId:
+        type: integer
+        format: int32
+      userId:
+        type: integer
+        format: int32
+      typeId:
+        type: integer
+        format: int32
+      total:
+        type: integer
+        format: int32
+      paymentGatewayId:
+        type: integer
+        format: int32
+      exchangeRate:
+        type: integer
+        format: int32
+      reverseRate:
+        type: integer
+        format: int32
+      cacheTime:
+        type: integer
+        format: int32
+    required:
+      - id
+      - reference
+      - authCode
+      - createdDate
+      - apiResponse
+      - wallet
+      - cancelled
+      - confirmed
+      - currencyId
+      - partnerId
+      - userId
+      - typeId
+      - total
+      - paymentGatewayId
+      - exchangeRate
+      - reverseRate
+  TranslationList:
+    title: TranslationList
+    type: object
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/Translation'
+      warnings:
+        type: array
+        items:
+          type: string
+  TranslationPayload:
+    title: TranslationPayload
+    type: object
+    properties:
+      key:
+        type: string
+      text:
+        type: string
+    required:
+      - key
+      - text
+  TransactionResponse:
+    title: TransactionResponse
+    type: object
+    properties:
+      transactionId:
+        type: string
+    required:
+      - transactionId
+  TransactionPayload:
+    title: TransactionPayload
+    type: object
+    properties:
+      userId:
+        example: 580269
+        type: integer
+        format: int32
+      amount:
+        example: 1000
+        type: object
+      typeId:
+        example: 21
+        type: integer
+        format: int32
+      partnerId:
+        example: 23
+        type: integer
+        format: int32
+      gatewayId:
+        example: 1
+        type: integer
+        format: int32
+      code:
+        example: Cash
+        type: string
+      reference:
+        example: Add-Funds
+        type: string
+    required:
+      - userId
+      - amount
+      - typeId
+      - partnerId
+      - gatewayId
+      - code
+      - reference
+  RefundTransaction:
+    title: RefundTransaction
+    type: object
+    properties:
+      userId:
+        example: 580269
+        type: integer
+        format: int32
+      amount:
+        example: 1000
+        type: object
+      betId:
+        example: 11657
+        type: integer
+        format: int32
+      typeId:
+        example: 21
+        type: integer
+        format: int32
+      partnerId:
+        example: 23
+        type: integer
+        format: int32
+      gatewayId:
+        example: 1
+        type: integer
+        format: int32
+      reason:
+        example: >-
+          Liability EUR 21.74 is over Customer Bet liability limit EUR 20 on
+          Customer level, Selection: uof:3/sr:sport:2/223/1714?hcp=-10.5, Match:
+          18927858
+        type: string
+      code:
+        example: MTS-Reject_684
+        type: string
+      reference:
+        example: Sportsbook-Refund_1
+        type: string
+    required:
+      - userId
+      - amount
+      - betId
+      - typeId
+      - partnerId
+      - gatewayId
+      - reason
+      - code
+      - reference
+  WinTransaction:
+    title: WinTransaction
+    type: object
+    properties:
+      userId:
+        example: 580269
+        type: integer
+        format: int32
+      amount:
+        example: 1000
+        type: object
+      betId:
+        example: 11657
+        type: integer
+        format: int32
+      typeId:
+        example: 21
+        type: integer
+        format: int32
+      partnerId:
+        example: 23
+        type: integer
+        format: int32
+      gatewayId:
+        example: 1
+        type: integer
+        format: int32
+      reference:
+        example: Sportsbook-Win_1
+        type: string
+    required:
+      - userId
+      - amount
+      - betId
+      - typeId
+      - partnerId
+      - gatewayId
+      - reference
+  User:
+    title: User
+    type: object
+    properties:
+      id:
+        example: 1
+        type: integer
+        format: int32
+      email:
+        example: api@lot.to
+        type: string
+      firstName:
+        example: Api
+        type: string
+      lastName:
+        example: Demo
+        type: string
+      isEmailVerified:
+        type: boolean
+      isTempPassword:
+        type: boolean
+      profile:
+        $ref: '#/definitions/Profile'
+      title:
+        type: string
+      wallet:
+        $ref: '#/definitions/Wallet'
+    required:
+      - id
+      - email
+      - firstName
+      - lastName
+  UserDetails:
+    title: UserDetails
+    type: object
+    properties:
+      userId:
+        example: 1
+        type: integer
+        format: int32
+      username:
+        example: adminUs3r
+        type: string
+    required:
+      - userId
+      - username
+  Venue:
+    title: Venue
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+      key:
+        type: string
+      name:
+        type: string
+    required:
+      - id
+      - key
+      - name
+  Wallet:
+    title: Wallet
+    type: object
+    properties:
+      reservedTotal:
+        description: The wallet non-withdrawable and reserved total in pence
+        type: integer
+        format: int32
+      total:
+        description: The wallet total in pence
+        type: integer
+        format: int32
+      status:
+        type: boolean
+  ToteBet:
+    title: ToteBet
+    type: object
+    properties:
+      stake:
+        example: 100
+        type: integer
+        format: int32
+      dividend:
+        type: number
+        format: double
+      winAmount:
+        example: 0
+        type: integer
+        format: int32
+      poolId:
+        example: 1
+        type: integer
+        format: int32
+      betTypeId:
+        example: 4
+        type: integer
+        format: int32
+      selectionId:
+        example: 4
+        type: integer
+        format: int32
+      ticketId:
+        example: 4
+        type: integer
+        format: int32
+      winTransactionId:
+        example: 4
+        type: integer
+        format: int32
+      refundTransactionId:
+        example: 4
+        type: integer
+        format: int32
+      lost:
+        example: true
+        type: boolean
+      settled:
+        example: true
+        type: boolean
+      tsn:
+        example: CC05BE1B8C4E
+        type: string
+      selection:
+        $ref: '#/definitions/Selection'
+    required:
+      - stake
+      - dividend
+      - winAmount
+      - poolId
+      - betTypeId
+      - selectionId
+      - ticketId
+      - winTransactionId
+      - refundTransactionId
+      - lost
+      - settled
+      - selection
+  BetslipBet:
+    title: BetslipBet
+    type: object
+    properties:
+      stake:
+        example: 100
+        type: integer
+        format: int32
+      poolId:
+        example: 1
+        type: integer
+        format: int32
+      betTypeId:
+        example: 1
+        type: integer
+        format: int32
+      selection:
+        $ref: '#/definitions/BetslipSelection'
+    required:
+      - stake
+      - poolId
+      - betTypeId
+      - selection
+  BetslipLeg:
+    title: BetslipLeg
+    type: object
+    properties:
+      legId:
+        example: 2
+        type: integer
+        format: int32
+      runnerIds:
+        example:
+          - 782
+        type: object
+      runners:
+        type: array
+        items:
+          $ref: '#/definitions/BetslipRunner'
+    required:
+      - legId
+      - runnerIds
+      - runners
+  BetslipRunner:
+    title: BetslipRunner
+    type: object
+    properties:
+      runnerId:
+        example: 24543
+        type: integer
+        format: int32
+      position:
+        example: 1
+        type: integer
+        format: int32
+    required:
+      - runnerId
+      - position
+  BetslipSelection:
+    title: BetslipSelection
+    type: object
+    properties:
+      legs:
+        type: array
+        items:
+          $ref: '#/definitions/BetslipLeg'
+    required:
+      - legs
+  BetslipTicket:
+    title: BetslipTicket
+    type: object
+    properties:
+      totalStake:
+        example: 100
+        type: integer
+        format: int32
+      bets:
+        type: array
+        items:
+          $ref: '#/definitions/BetslipBet'
+    required:
+      - bets
+  BetType:
+    title: BetType
+    type: object
+    properties:
+      id:
+        example: 1
+        type: integer
+        format: int32
+      shortName:
+        example: EW
+        type: string
+      longName:
+        example: EACH WAY
+        type: string
+    required:
+      - id
+      - shortName
+      - longName
+  Breakdown:
+    title: Breakdown
+    type: object
+    properties:
+      legId:
+        example: 2
+        type: integer
+        format: int32
+      runnerId:
+        example: 2332
+        type: integer
+        format: int32
+      selectionId:
+        example: 231
+        type: integer
+        format: int32
+      order:
+        example: 23
+        type: integer
+        format: int32
+      lost:
+        example: true
+        type: boolean
+      settled:
+        example: true
+        type: boolean
+    required:
+      - legId
+      - runnerId
+      - selectionId
+      - order
+      - lost
+      - settled
+  Card:
+    title: Card
+    type: object
+    properties:
+      id:
+        example: 1
+        type: integer
+        format: int32
+      meet:
+        example: 48
+        type: integer
+        format: int32
+      performance:
+        example: 161
+        type: integer
+        format: int32
+      raceCount:
+        example: 6
+        type: integer
+        format: int32
+      postTime:
+        example: '17:55:00'
+        type: string
+      name:
+        example: STRATFORD
+        type: string
+      maxRunner:
+        example: 24
+        type: integer
+        format: int32
+      countryCode:
+        example: RP
+        type: string
+      courseId:
+        example: 1
+        type: integer
+        format: int32
+      cardType:
+        $ref: '#/definitions/CardType'
+      performanceType:
+        $ref: '#/definitions/PerformanceType'
+      provider:
+        $ref: '#/definitions/Provider'
+      races:
+        type: array
+        items:
+          $ref: '#/definitions/Race'
+    required:
+      - id
+      - meet
+      - performance
+      - raceCount
+      - postTime
+      - name
+      - maxRunner
+      - countryCode
+      - courseId
+      - cardType
+      - performanceType
+      - provider
+      - races
+  CardType:
+    title: CardType
+    type: object
+    properties:
+      id:
+        example: 1
+        type: integer
+        format: int32
+      name:
+        example: THOROUGHBRED
+        type: string
+    required:
+      - id
+      - name
+  Leg:
+    title: Leg
+    type: object
+    properties:
+      runnerIds:
+        example:
+          - 1
+          - 5
+        type: object
+      legId:
+        example: 23
+        type: integer
+        format: int32
+      breakdowns:
+        type: object
+    required:
+      - runnerIds
+      - legId
+  PerformanceType:
+    title: PerformanceType
+    type: object
+    properties:
+      id:
+        example: 1
+        type: integer
+        format: int32
+      name:
+        example: MAT
+        type: string
+    required:
+      - id
+      - name
+  Pool:
+    title: Pool
+    type: object
+    properties:
+      id:
+        example: 1
+        type: integer
+        format: int32
+      cardId:
+        example: 1
+        type: integer
+        format: int32
+      bettingOn:
+        example: false
+        type: boolean
+      cashingOn:
+        example: true
+        type: boolean
+      cancellingOn:
+        example: false
+        type: boolean
+      total:
+        example: 0
+        type: integer
+        format: int32
+      scratched:
+        example: false
+        type: boolean
+      poolType:
+        $ref: '#/definitions/PoolType'
+      betTypes:
+        type: array
+        items:
+          $ref: '#/definitions/BetType'
+    required:
+      - id
+      - cardId
+      - bettingOn
+      - cashingOn
+      - total
+      - scratched
+      - poolType
+      - betTypes
+  PoolType:
+    title: PoolType
+    type: object
+    properties:
+      id:
+        example: 1
+        type: integer
+        format: int32
+      key:
+        example: 1
+        type: integer
+        format: int32
+      name:
+        example: WIN
+        type: string
+      abbreviation:
+        example: WIN
+        type: string
+      numLeg:
+        example: 1
+        type: integer
+        format: int32
+      numPositions:
+        example: 1
+        type: integer
+        format: int32
+      maxNumPositions:
+        type: integer
+        format: int32
+    required:
+      - id
+      - key
+      - name
+      - abbreviation
+      - numLeg
+      - numPositions
+      - maxNumPositions
+  Provider:
+    title: Provider
+    type: object
+    properties:
+      id:
+        example: 1
+        type: integer
+        format: int32
+      name:
+        example: GBI
+        type: string
+    required:
+      - id
+      - name
+  Selection:
+    title: Selection
+    type: object
+    properties:
+      id:
+        example: 14
+        type: integer
+        format: int32
+      key:
+        example: '1:[1,3]-[2,3]-[2,6]'
+        type: string
+      breakdowns:
+        type: array
+        items:
+          $ref: '#/definitions/Breakdown'
+  Race:
+    title: Race
+    type: object
+    properties:
+      id:
+        example: 1
+        type: integer
+        format: int32
+      course:
+        example: T
+        type: string
+      distance:
+        example: '3590'
+        type: string
+      distanceText:
+        example: 2m 70yds
+        type: string
+      distanceUnit:
+        example: Yards
+        type: string
+      enabled:
+        example: true
+        type: boolean
+      handicap:
+        example: false
+        type: boolean
+      numPositions:
+        example: 3
+        type: integer
+        format: int32
+      name:
+        example: Watch Racing TV Now Novices' Hur
+        type: string
+      postTime:
+        example: '15:15:00+02:00'
+        type: string
+      cardId:
+        example: 27
+        type: integer
+        format: int32
+      raceType:
+        $ref: '#/definitions/RaceType'
+      toteRaceType:
+        $ref: '#/definitions/ToteRaceType'
+      runners:
+        type: array
+        items:
+          $ref: '#/definitions/Runner'
+    required:
+      - id
+      - distanceText
+      - enabled
+      - handicap
+      - numPositions
+      - name
+      - postTime
+      - cardId
+      - raceType
+      - toteRaceType
+      - runners
+  RaceType:
+    title: RaceType
+    type: object
+    properties:
+      id:
+        example: 1
+        type: integer
+        format: int32
+      name:
+        example: Flat
+        type: string
+    required:
+      - id
+      - name
+  Runner:
+    title: Runner
+    type: object
+    properties:
+      id:
+        example: 1
+        type: integer
+        format: int32
+      name:
+        example: Santani
+        type: string
+      jockeyName:
+        example: B Poste
+        type: string
+      position:
+        example: 1
+        type: integer
+        format: int32
+      trainer:
+        example: Pam Sly
+        type: string
+      scratched:
+        example: false
+        type: boolean
+      weightCarried:
+        example: 155
+        type: integer
+        format: int32
+      morningLineOdds:
+        example: 11/4
+        type: string
+      showPrice:
+        example: 18/1
+        type: string
+      horseAge:
+        example: 5
+        type: integer
+        format: int32
+      rpRating:
+        example: 63
+        type: integer
+        format: int32
+      topSpeed:
+        example: true
+        type: boolean
+      formFigures:
+        example: 5F-074
+        type: string
+      officialRating:
+        example: '94'
+        type: string
+      jockeySilk:
+        example: 213809.gif
+        type: string
+    required:
+      - id
+      - name
+      - jockeyName
+      - position
+      - scratched
+      - weightCarried
+  ToteTrack:
+    title: ToteTrack
+    type: object
+    properties:
+      id:
+        example: 1
+        type: integer
+        format: int32
+      name:
+        example: GBI
+        type: string
+    required:
+      - id
+      - name
+  ToteCourse:
+    title: ToteCourse
+    type: object
+    properties:
+      id:
+        example: 1
+        type: integer
+        format: int32
+      code:
+        example: Dusseldorf
+        type: string
+      key:
+        example: RP-240
+        type: string
+      name:
+        example: DUSSELDORF
+        type: string
+      type:
+        example: B
+        type: string
+      countryCode:
+        example: GB
+        type: string
+      track:
+        $ref: '#/definitions/ToteTrack'
+    required:
+      - id
+      - code
+      - key
+      - name
+      - type
+      - countryCode
+  ToteRaceType:
+    title: ToteRaceType
+    type: object
+    properties:
+      id:
+        example: 1
+        type: integer
+        format: int32
+      name:
+        example: JUMP
+        type: string
+    required:
+      - id
+      - name
+  ToteTicket:
+    title: ToteTicket
+    type: object
+    properties:
+      id:
+        example: 1
+        type: integer
+        format: int32
+      userId:
+        example: 1000
+        type: integer
+        format: int32
+      transactionId:
+        example: 1190
+        type: integer
+        format: int32
+      createdDate:
+        example: '2019-08-12 15:37:48'
+        type: string
+      totalStake:
+        example: 300
+        type: integer
+        format: int32
+      processed:
+        example: false
+        type: boolean
+      partnerId:
+        example: 23
+        type: integer
+        format: int32
+      currencyId:
+        example: 1
+        type: integer
+        format: int32
+      bets:
+        type: array
+        items:
+          $ref: '#/definitions/ToteBet'
+    required:
+      - bets
+  Bonus:
+    title: Bonus
+    type: object
+    properties:
+      count:
+        description: >-
+          This value can be set as 0 even when the lottery has a bonus ball
+          configuration. This is due to how the bonus balls are allocated from
+          the picker.
+        example: 0
+        type: integer
+        format: int32
+      min:
+        example: 0
+        type: integer
+        format: int32
+      max:
+        example: 9
+        type: integer
+        format: int32
+  Competitor:
+    title: Competitor
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+      key:
+        type: string
+      name:
+        type: string
+      abbreviation:
+        type: string
+      countryId:
+        type: integer
+        format: int32
+      qualifier:
+        type: object
+      order:
+        type: integer
+        format: int32
+    required:
+      - id
+      - key
+      - name
+      - abbreviation
+      - countryId
+      - qualifier
+      - order
+  Event1:
+    title: Event1
+    type: object
+    properties:
+      id:
+        type: number
+        format: double
+      key:
+        type: string
+      scheduledTime:
+        type: string
+      startTime:
+        type: string
+      sportId:
+        type: number
+        format: double
+      tournamentId:
+        type: number
+        format: double
+      name:
+        type: string
+      status:
+        $ref: '#/definitions/EventStatus'
+    required:
+      - id
+      - key
+      - scheduledTime
+      - startTime
+      - sportId
+      - name
+      - status
+  Main:
+    title: Main
+    type: object
+    properties:
+      count:
+        example: 6
+        type: integer
+        format: int32
+      min:
+        example: 1
+        type: integer
+        format: int32
+      max:
+        example: 49
+        type: integer
+        format: int32
+  Market:
+    title: Market
+    type: object
+    properties:
+      code:
+        type: string
+      outcomeCodes:
+        type: string
+      id:
+        type: integer
+        format: int32
+      favourite:
+        type: boolean
+      fullName:
+        type: string
+      marketId:
+        type: integer
+        format: int32
+      key:
+        type: string
+      name:
+        type: string
+      specifier:
+        type: string
+      status:
+        type: integer
+        format: int32
+      winnersTally:
+        type: integer
+        format: int32
+      outcomes:
+        type: object
+    required:
+      - code
+      - outcomeCodes
+      - id
+      - favourite
+      - fullName
+      - marketId
+      - key
+      - name
+      - specifier
+      - status
+      - winnersTally
+      - outcomes
+  Market1:
+    title: Market1
+    type: object
+    properties:
+      id:
+        type: number
+        format: double
+      favourite:
+        type: boolean
+      fullName:
+        type: string
+      marketId:
+        type: number
+        format: double
+      key:
+        type: string
+      name:
+        type: string
+      specifier:
+        type: string
+      status:
+        type: number
+        format: double
+    required:
+      - id
+      - favourite
+      - fullName
+      - marketId
+      - key
+      - name
+      - specifier
+      - status
+  Numbers:
+    title: Numbers
+    type: object
+    properties:
+      main:
+        $ref: '#/definitions/Main'
+      bonus:
+        $ref: '#/definitions/Bonus'
+  Outcome:
+    title: Outcome
+    type: object
+    properties:
+      id:
+        type: number
+        format: double
+      active:
+        type: boolean
+      name:
+        type: string
+      fullName:
+        type: string
+      outcomeId:
+        type: number
+        format: double
+      odds:
+        type: number
+        format: double
+    required:
+      - id
+      - active
+      - name
+      - fullName
+      - outcomeId
+      - odds
+  ToteCardsResponse:
+    title: ToteCardsResponse
+    type: object
+    properties:
+      card:
+        $ref: '#/definitions/Card'
+  ToteCoursesResponse:
+    title: ToteCoursesResponse
+    type: object
+    properties:
+      courses:
+        type: array
+        items:
+          $ref: '#/definitions/ToteCourse'
+  ToteCoursesResponse1:
+    title: ToteCoursesResponse1
+    type: object
+    properties:
+      course:
+        $ref: '#/definitions/ToteCourse'
+  ToteTicketsResponse:
+    title: ToteTicketsResponse
+    type: object
+    properties:
+      tickets:
+        type: array
+        items:
+          $ref: '#/definitions/ToteTicket'
+  ToteTicketsResponse1:
+    title: ToteTicketsResponse1
+    type: object
+    properties:
+      ticket:
+        $ref: '#/definitions/ToteTicket'
+  Warning:
+    title: Warning
+    type: object
+    properties:
+      error:
+        example: Missing email address
+        type: string
+      code:
+        example: ERR1000
+        type: string
+security:
+  - apiKey: []
+tags:
+  - name: Lotteries
+    description: ''
+  - name: Kyc
+    description: ''
+  - name: Sports
+    description: ''
+  - name: Transactions
+    description: ''
+  - name: Transaction
+    description: ''
+  - name: Translations
+    description: ''
+  - name: Users
+    description: ''
+  - name: Bets
+    description: ''
+  - name: Tote
+    description: ''
+  - name: Cards
+    description: ''
+  - name: Courses
+    description: ''
+  - name: Pools
+    description: ''
+  - name: Races
+    description: ''
