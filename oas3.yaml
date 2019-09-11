@@ -34,7 +34,7 @@ paths:
         Return a list of lottery games enabled for the active partner
       summary: Get games list
       tags:
-        - Lotteries
+        - Lottery
       operationId: GamesGet
       deprecated: false
       produces:
@@ -68,7 +68,7 @@ paths:
       description: Returns a single lottery game by ID
       summary: Get a game by its ID
       tags:
-        - Lotteries
+        - Lottery
       operationId: GamesByIdGet
       deprecated: false
       produces:
@@ -95,7 +95,7 @@ paths:
       description: Return a list of all available lotteries
       summary: Get lottery list
       tags:
-        - Lotteries
+        - Lottery
       operationId: LotteriesGet
       deprecated: false
       produces:
@@ -129,7 +129,7 @@ paths:
       description: Return a single lottery by ID
       summary: Get a lottery by its ID
       tags:
-        - Lotteries
+        - Lottery
       operationId: LotteriesByIdGet
       deprecated: false
       produces:
@@ -156,7 +156,7 @@ paths:
       description: Return all draws for a given lottery
       summary: Get lottery draws by the lottery ID
       tags:
-        - Lotteries
+        - Lottery
       operationId: LotteriesDrawsByIdGet
       deprecated: false
       produces:
@@ -185,7 +185,7 @@ paths:
       description: Return a single lottery draw by drawID
       summary: Get a lottery draw by its ID
       tags:
-        - Lotteries
+        - Lottery
       operationId: LotteriesDrawByIdAndDrawIdGet
       deprecated: false
       produces:
@@ -218,7 +218,7 @@ paths:
       description: Check outcome of the kyc verification
       summary: Get KYC results
       tags:
-        - Kyc
+        - KYC
       operationId: KycResultsGet
       deprecated: false
       produces:
@@ -241,7 +241,7 @@ paths:
       description: Upload documents for verification
       summary: Upload KYC documents
       tags:
-        - Kyc
+        - KYC
       operationId: KycUploadPost
       deprecated: false
       produces:
@@ -574,7 +574,7 @@ paths:
       description: This returns the translation data for a particular ID
       summary: Get a transaction by its ID
       tags:
-        - Transaction
+        - Transactions
       operationId: TransactionByIdGet
       deprecated: false
       produces:
@@ -600,7 +600,7 @@ paths:
       description: Create a new transaction for deposits
       summary: Create a credit transaction
       tags:
-        - Transaction
+        - Transactions
       operationId: TransactionCreditPost
       deprecated: false
       produces:
@@ -633,7 +633,7 @@ paths:
       description: Create a new transaction for bets
       summary: Create a bet transaction
       tags:
-        - Transaction
+        - Transactions
       operationId: TransactionBetPost
       deprecated: false
       produces:
@@ -666,7 +666,7 @@ paths:
       description: Create a new transaction for bets
       summary: Create a debit transaction
       tags:
-        - Transaction
+        - Transactions
       operationId: TransactionDebitPost
       deprecated: false
       produces:
@@ -699,7 +699,7 @@ paths:
       description: Create a new transaction for winnings
       summary: Create a win transaction
       tags:
-        - Transaction
+        - Transactions
       operationId: TransactionWinPost
       deprecated: false
       produces:
@@ -732,7 +732,7 @@ paths:
       description: Create a new transaction for refunds
       summary: Create a refund transaction
       tags:
-        - Transaction
+        - Transactions
       operationId: TransactionRefundPost
       deprecated: false
       produces:
@@ -765,7 +765,7 @@ paths:
       description: Create a new transaction for a withdrawal
       summary: Create a withdrawal transaction
       tags:
-        - Transaction
+        - Transactions
       operationId: TransactionWithdrawPost
       deprecated: false
       produces:
@@ -984,7 +984,7 @@ paths:
             $ref: '#/definitions/ResetTokenRequest'
       responses:
         '200':
-          description: 'On success, a 200 OK is issued with no content'
+          description: 'On success, a 200 OK is issued'
           headers: {}
         '400':
           description: Standardised error response
@@ -1006,11 +1006,14 @@ paths:
           required: true
           type: string
           description: Input email address
+        - name: username
+          in: query
+          required: true
+          type: string
+          description: Input username
       responses:
-        '200':
-          description: 'On success, the reset token is returned.'
-          schema:
-            $ref: '#/definitions/ResetToken'
+        '204':
+          description: 'On success, a 204 No Content is issued'
           headers: {}
         '400':
           description: Standardised error response
@@ -1155,6 +1158,7 @@ paths:
       description: Places each bet that is on the ticket
       summary: Create a Tote bet
       tags:
+        - Tote
         - Bets
       operationId: ToteBetPost
       deprecated: false
@@ -1182,6 +1186,7 @@ paths:
         individual Tote TSN.
       summary: Get a Tote bet by its ID
       tags:
+        - Tote
         - Bets
       operationId: ToteBetsByIdGet
       deprecated: false
@@ -1213,6 +1218,7 @@ paths:
       summary: Get the Tote bet types list
       tags:
         - Tote
+        - Bets
       operationId: ToteBetTypesGet
       deprecated: false
       produces:
@@ -1240,6 +1246,7 @@ paths:
       summary: Get a list of Tote tickets
       tags:
         - Tote
+        - Bets
       operationId: ToteTicketsGet
       deprecated: false
       produces:
@@ -1267,6 +1274,7 @@ paths:
       summary: Get a Tote ticket by its ID
       tags:
         - Tote
+        - Bets
       operationId: ToteTicketsByIdGet
       deprecated: false
       produces:
@@ -1297,6 +1305,7 @@ paths:
       description: Return a list of cards for today
       summary: Get the Tote cards
       tags:
+        - Tote
         - Cards
       operationId: ToteCardsGet
       deprecated: false
@@ -1331,6 +1340,7 @@ paths:
       description: Return a single card specified by its identifier
       summary: Get a Tote card by its ID
       tags:
+        - Tote
         - Cards
       operationId: ToteCardsByIdGet
       deprecated: false
@@ -1361,6 +1371,7 @@ paths:
       description: 'Return a static list of cards. IDs: 83, 84'
       summary: Get the test Tote cards
       tags:
+        - Tote
         - Cards
       operationId: ToteTestCardsGet
       deprecated: false
@@ -1384,7 +1395,7 @@ paths:
       description: 'Return a static list of pools. IDs: 78 through 164'
       summary: Get the test Tote pools
       tags:
-        - Cards
+        - Tote
       operationId: ToteTestPoolsGet
       deprecated: false
       produces:
@@ -1407,6 +1418,7 @@ paths:
       description: Return a list of courses
       summary: Get the Tote course list
       tags:
+        - Tote
         - Courses
       operationId: ToteCoursesGet
       deprecated: false
@@ -1440,6 +1452,7 @@ paths:
       description: Return a single course by its ID
       summary: Get a Tote course by its ID
       tags:
+        - Tote
         - Courses
       operationId: ToteCoursesByIdGet
       deprecated: false
@@ -1471,6 +1484,7 @@ paths:
         Return a list of pools for today
       summary: Get the list of Tote pools
       tags:
+        - Tote
         - Pools
       operationId: TotePoolsGet
       deprecated: false
@@ -1505,6 +1519,7 @@ paths:
       description: Return a race object by its given identifier
       summary: Get a Tote race by its ID
       tags:
+        - Tote
         - Races
       operationId: ToteRacesByIdGet
       deprecated: false
