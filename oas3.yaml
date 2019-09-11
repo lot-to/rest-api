@@ -1159,7 +1159,6 @@ paths:
       summary: Create a Tote bet
       tags:
         - Tote
-        - Bets
       operationId: ToteBetPost
       deprecated: false
       produces:
@@ -1187,7 +1186,6 @@ paths:
       summary: Get a Tote bet by its ID
       tags:
         - Tote
-        - Bets
       operationId: ToteBetsByIdGet
       deprecated: false
       produces:
@@ -1218,7 +1216,6 @@ paths:
       summary: Get the Tote bet types list
       tags:
         - Tote
-        - Bets
       operationId: ToteBetTypesGet
       deprecated: false
       produces:
@@ -1246,7 +1243,6 @@ paths:
       summary: Get a list of Tote tickets
       tags:
         - Tote
-        - Bets
       operationId: ToteTicketsGet
       deprecated: false
       produces:
@@ -1274,7 +1270,6 @@ paths:
       summary: Get a Tote ticket by its ID
       tags:
         - Tote
-        - Bets
       operationId: ToteTicketsByIdGet
       deprecated: false
       produces:
@@ -1306,7 +1301,6 @@ paths:
       summary: Get the Tote cards
       tags:
         - Tote
-        - Cards
       operationId: ToteCardsGet
       deprecated: false
       produces:
@@ -1341,7 +1335,6 @@ paths:
       summary: Get a Tote card by its ID
       tags:
         - Tote
-        - Cards
       operationId: ToteCardsByIdGet
       deprecated: false
       produces:
@@ -1372,7 +1365,6 @@ paths:
       summary: Get the test Tote cards
       tags:
         - Tote
-        - Cards
       operationId: ToteTestCardsGet
       deprecated: false
       produces:
@@ -1419,7 +1411,6 @@ paths:
       summary: Get the Tote course list
       tags:
         - Tote
-        - Courses
       operationId: ToteCoursesGet
       deprecated: false
       produces:
@@ -1453,7 +1444,6 @@ paths:
       summary: Get a Tote course by its ID
       tags:
         - Tote
-        - Courses
       operationId: ToteCoursesByIdGet
       deprecated: false
       produces:
@@ -1485,7 +1475,6 @@ paths:
       summary: Get the list of Tote pools
       tags:
         - Tote
-        - Pools
       operationId: TotePoolsGet
       deprecated: false
       produces:
@@ -1520,7 +1509,6 @@ paths:
       summary: Get a Tote race by its ID
       tags:
         - Tote
-        - Races
       operationId: ToteRacesByIdGet
       deprecated: false
       produces:
