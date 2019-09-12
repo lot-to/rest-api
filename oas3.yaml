@@ -4104,6 +4104,16 @@ definitions:
   PariplayGame:
     title: Pariplay Game
     type: object
+    required:
+      - id
+      - gameCode
+      - name
+      - platform
+      - status
+      - categoryId
+      - pageUrlCode
+      - category
+      - settings
     properties:
       id:
         example: 14
@@ -4135,6 +4145,9 @@ definitions:
         $ref: "#/definitions/PariplaySettings"
   PariplayGames:
     title: Pariplay Games Array
+    type: object
+    required:
+      - games
     properties:
       games:
         type: array
@@ -4142,11 +4155,15 @@ definitions:
           $ref: "#/definitions/PariplayGame"
   PariplayToken:
     title: Pariplay Token Response
+    type: object
+    required:
+      - realUrl
+      - demoUrl
     properties:
-      realURL:
+      realUrl:
         type: string
         example: "https://pariplay.com/..."
-      demoURL:
+      demoUrl:
         type: string
         example: "https://demo.pariplay.com/..."
 security:
