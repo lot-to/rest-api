@@ -1533,6 +1533,115 @@ paths:
           description: Standardised not found response
           schema:
             $ref: '#/definitions/Error'
+  '/pariplay/instant-wins':
+      get:
+        description: Returns a list of instant win pariplay games
+        summary: Get instant win games
+        tags:
+          - Pariplay
+        deprecated: false
+        produces:
+          - application/json
+        parameters:
+          - name: key
+            in: query
+            required: true
+            type: string
+            description: 'Partner Key'
+        responses:
+          '200':
+            description: Returns an array of Pariplay Games
+            schema:
+              $ref: '#/definitions/PariplayGames'
+          '500':
+            description: Standardised Error response
+            schema:
+              $ref: '#/definitions/Error'
+  '/pariplay/scratch-cards':
+      get:
+        description: Returns a list of scratch card pariplay games
+        summary: Get scratch card games
+        tags:
+          - Pariplay
+        deprecated: false
+        produces:
+          - application/json
+        parameters:
+          - name: key
+            in: query
+            required: true
+            type: string
+            description: 'Partner Key'
+        responses:
+          '200':
+            description: Returns an array of Pariplay Games
+            schema:
+              $ref: '#/definitions/PariplayGames'
+          '500':
+            description: Standardised Error response
+            schema:
+              $ref: '#/definitions/Error'
+  '/pariplay/token/{game}':
+      get: 
+        description: Returns a demo and real URL for a specified pariplay game
+        summary: Get pariplay URLs
+        tags:
+          - Pariplay
+        deprecated: false
+        produces:
+          - application/json
+        parameters:
+          - name: key
+            in: query
+            required: true
+            type: string
+            description: 'Partner Key'
+          - name: PlayerId
+            in: query
+            required: true
+            type: integer
+            description: 'Player ID'
+          - name: PlayerIp
+            in: query
+            required: true
+            type: string
+            description: 'Player IP'
+          - name: game
+            in: path
+            required: true
+            type: integer
+            description: 'Pariplay Game ID'
+        responses:
+          '200':
+            description: Returns demoURL and realURL
+            schema:
+              $ref: '#/definitions/PariplayToken'
+          '400':
+            description: Missing parameter
+            schema:
+              $ref: '#/definitions/Error'
+          '403':
+            description: IP Address is restricted
+            schema:
+              $ref: '#/definitions/Error'
+          '404':
+            description: Standardised not found response
+            schema:
+              $ref: '#/definitions/Error'
+          '451':
+            description: Game unavailable in user's country
+            schema:
+              $ref: '#/definitions/Error'
+          '500':
+            description: Standardised error response
+            schema:
+              $ref: '#/definitions/Error'
+          '501':
+            description: Demo mode is not available for that Game ID
+            schema:
+              $ref: '#/definitions/Error'
+          
+          
 definitions:
   Category:
     title: Category
@@ -3960,6 +4069,86 @@ definitions:
       code:
         example: ERR1000
         type: string
+  PariplayCategory:
+    title: Pariplay Category
+    type: object
+    properties:
+      id:
+        example: 0
+        type: integer
+      name:
+        example: ""
+        type: string
+      pageUrlCode:
+        example: ""
+        type: string
+  PariplaySettings:
+    title: Pariplay Settings
+    type: object
+    properties:
+      colour:
+        example: "#ff0000"
+        type: string
+      gameCharacter:
+        example: "example.png"
+        type: string
+      heroImage:
+        example: "hero.png"
+        type: string
+      textColour:
+        example: "#ffffff"
+        type: string
+      titleImage:
+        example: "title.png"
+        type: string
+  PariplayGame:
+    title: Pariplay Game
+    type: object
+    properties:
+      id:
+        example: 14
+        type: integer
+      gameCode:
+        example: "PP_HTML5_FruitBasket"
+        type: string
+      name:
+        example: "Fruit Basket"
+        type: string
+      platform:
+        example: 3
+        type: integer
+      defaultDemoUrl:
+        example: ""
+        type: string
+      status:
+        example: 1
+        type: integer
+      categoryId:
+        example: 2
+        type: integer
+      pageUrlCode: 
+        example: "fruit-basket-instant-win"
+        type: string
+      category:
+        $ref: "#/definitions/PariplayCategory"
+      settings:
+        $ref: "#/definitions/PariplaySettings"
+  PariplayGames:
+    title: Pariplay Games Array
+    properties:
+      games:
+        type: array
+        items:
+          $ref: "#/definitions/PariplayGame"
+  PariplayToken:
+    title: Pariplay Token Response
+    properties:
+      realURL:
+        type: string
+        example: "https://pariplay.com/..."
+      demoURL:
+        type: string
+        example: "https://demo.pariplay.com/..."
 security:
   - apiKey: []
 tags:
