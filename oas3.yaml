@@ -1535,6 +1535,7 @@ paths:
             $ref: '#/definitions/Error'
   '/pariplay/instant-wins':
       get:
+        operationId: GetPariplayInstants
         description: Returns a list of instant win pariplay games
         summary: Get instant win games
         tags:
@@ -1559,6 +1560,7 @@ paths:
               $ref: '#/definitions/Error'
   '/pariplay/scratch-cards':
       get:
+        operationId: GetPariplayScratchcards
         description: Returns a list of scratch card pariplay games
         summary: Get scratch card games
         tags:
@@ -1583,6 +1585,7 @@ paths:
               $ref: '#/definitions/Error'
   '/pariplay/token/{game}':
       get: 
+        operationId: GetPariplayToken
         description: Returns a demo and real URL for a specified pariplay game
         summary: Get pariplay URLs
         tags:
@@ -4153,6 +4156,10 @@ definitions:
         type: array
         items:
           $ref: "#/definitions/PariplayGame"
+      gamesCategories:
+        type: array
+        items:
+          $ref: "#/definitions/PariplayCategory"
   PariplayToken:
     title: Pariplay Token Response
     type: object
