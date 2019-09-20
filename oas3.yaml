@@ -585,6 +585,16 @@ paths:
           required: true
           type: string
           description: Transaction Id
+        - name: userId
+          in: query
+          required: true
+          type: string
+          description: User id
+        - name: hash
+          in: query
+          required: true
+          type: string
+          description: 'HMAC(string[transactionId, userId, partnerKey, debug], partnerSecretKey)'
       responses:
         '200':
           description: The specified transaction object
@@ -606,6 +616,11 @@ paths:
       produces:
         - application/json
       parameters:
+        - name: hash
+          in: query
+          type: string
+          required: true
+          description: 'HMAC(string[amount, reference, typeId, userId], partnerSecretKey)'
         - name: body
           in: body
           required: true
@@ -639,6 +654,11 @@ paths:
       produces:
         - application/json
       parameters:
+        - name: hash
+          in: query
+          type: string
+          required: true
+          description: 'HMAC(string[amount, reference, typeId, userId], partnerSecretKey)'
         - name: body
           in: body
           required: true
@@ -672,6 +692,11 @@ paths:
       produces:
         - application/json
       parameters:
+        - name: hash
+          in: query
+          type: string
+          required: true
+          description: 'HMAC(string[amount, reference, typeId, userId], partnerSecretKey)'
         - name: body
           in: body
           required: true
@@ -705,6 +730,11 @@ paths:
       produces:
         - application/json
       parameters:
+        - name: hash
+          in: query
+          type: string
+          required: true
+          description: 'HMAC(string[amount, reference, typeId, userId], partnerSecretKey)'
         - name: body
           in: body
           required: true
@@ -738,6 +768,11 @@ paths:
       produces:
         - application/json
       parameters:
+        - name: hash
+          in: query
+          type: string
+          required: true
+          description: 'HMAC(string[amount, reference, typeId, userId], partnerSecretKey)'
         - name: body
           in: body
           required: true
@@ -771,6 +806,11 @@ paths:
       produces:
         - application/json
       parameters:
+        - name: hash
+          in: query
+          type: string
+          required: true
+          description: 'HMAC(string[amount, reference, typeId, userId], partnerSecretKey)'
         - name: body
           in: body
           required: true
