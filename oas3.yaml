@@ -265,6 +265,35 @@ paths:
           description: Standardised error response
           schema:
             $ref: '#/definitions/Error'
+  /kyc/validate:
+    post:
+      description: Submit details for KYC verification
+      summary: Submit user's details for investigation
+      tags:
+        - KYC
+      operationId: postKyc
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: ''
+          schema:
+            type: object
+      responses:
+        '200':
+          description: Return boolean of the results outcome
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/KycResult'
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: '#/definitions/Error'            
   /sports:
     get:
       description: Return the list of active sports
@@ -2098,6 +2127,15 @@ definitions:
       success:
         example: false
         type: boolean
+  KycResult:
+    title: KycResult
+    type: object
+    properties:
+      success:
+        example: false
+        type: boolean
+      message:
+        example: "REFER - Name & address match (NO DOB VERIFIED)"
   KycUpload:
     title: KycUpload
     type: object
