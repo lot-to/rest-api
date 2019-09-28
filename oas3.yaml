@@ -1142,6 +1142,31 @@ paths:
           description: Standardised error response
           schema:
             $ref: '#/definitions/Error'
+  /user/remind:
+    post:
+      description: Sends a username reminder email to the given email provided.
+      summary: Send username reminder
+      tags:
+        - Users
+      operationId: UserRemindPost
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          required: false
+          description: The fields required to login the user
+          schema:
+            $ref: '#/definitions/UserRemindRequest'
+      responses:
+        '200':
+          description: 'On success, a 200 OK is returned.'
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: '#/definitions/Error'
   /user:
     head:
       tags:
@@ -4253,6 +4278,15 @@ definitions:
       demoUrl:
         type: string
         example: "https://demo.pariplay.com/..."
+  UserRemindRequest:
+    title: Username Reminder Request
+    type: object
+    required:
+      - email
+    properties:
+      email:
+        type: string
+        example: "api-test@lot.to"
 security:
   - apiKey: []
 tags:
