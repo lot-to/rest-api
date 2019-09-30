@@ -2768,6 +2768,10 @@ definitions:
           Your mobile or landline phone number. This is optional by default but
           can be set as a required field.
         type: string
+        example: 7701928341
+      phoneNumberCode:
+        description: The E.164 international prefix for the phone number
+        example: +44
       marketingPrefs:
         description: >-
           An array of communication preferences the player wants to opt in to
@@ -3358,6 +3362,9 @@ definitions:
         example: 1
         type: integer
         format: int32
+      key:
+        description: Unique reference hash to link each bet requets with the response ID returned on success
+        example: 9db75e1c-b499-4a74-8b0b-5edd6f143865
       selection:
         $ref: '#/definitions/BetslipSelection'
     required:
@@ -3554,20 +3561,89 @@ definitions:
     title: Leg
     type: object
     properties:
-      runnerIds:
-        example:
-          - 1
-          - 5
-        type: object
-      legId:
-        example: 23
+      id:
         type: integer
-        format: int32
+        example: 1
+      poolId:
+        type: integer
+        example: 1000
+      raceId:
+        type: integer
+        example: 50
+      cardId:
+        type: integer
+        example: 10
+      key:
+        type: integer
+        example: 1
+      open:
+        type: boolean
+        example: true
+      scratched:
+        type: boolean
+        example: false
+      results:
+        type: array
+        items:
+        - type: object
+          properties:
+            raceId:
+              type: integer
+              example: 50
+            runnerId:
+              type: integer
+              example: 216977
+            legId:
+              type: integer
+              example: 1
+            position:
+              type: integer
+              example: 1
+            units:
+              type: integer
+              example: 1500
+            nonRunner:
+              type: boolean
+              example: false
+            dividend:
+              type: integer
+              example: 340
+            dividendLow:
+              type: integer
+              example: 1250
+            dividendHigh:
+              type: integer
+              example: 1500
+          required:
+          - raceId
+          - runnerId
+          - legId
+          - position
+          - units
+          - nonRunner
+          - dividend
       breakdowns:
-        type: object
-    required:
-      - runnerIds
-      - legId
+        type: array
+        items:
+        - type: object
+          properties:
+            runnerId:
+              type: integer
+              example: 216977
+            stake:
+              type: integer
+              example: 1500
+            raceOdds:
+              type: string
+              example: "28/1"
+            oddType:
+              type: integer
+              example: 1
+          required:
+          - runnerId
+          - stake
+          - raceOdds
+          - oddType
   PerformanceType:
     title: PerformanceType
     type: object
@@ -3616,6 +3692,10 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/BetType'
+      legs:
+        type: array
+        items:
+          $ref: '#/definitions/Leg'
     required:
       - id
       - cardId
@@ -3783,6 +3863,10 @@ definitions:
         example: 1
         type: integer
         format: int32
+      finishingPosition:
+        example: 4
+        type: integer
+        format: int32
       trainer:
         example: Pam Sly
         type: string
@@ -3819,6 +3903,9 @@ definitions:
       jockeySilk:
         example: 213809.gif
         type: string
+      unnamedFavourite:
+        example: false
+        type: boolean
     required:
       - id
       - name
