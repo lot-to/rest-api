@@ -1272,31 +1272,6 @@ paths:
           description: Standardised not found response
           schema:
             $ref: '#/definitions/Error'
-  /tote/bets:
-    post:
-      description: Returns a list of all bets for and authenticated user or partner
-      summary: Get the Tote bet types list
-      tags:
-        - Tote
-      operationId: GetBets
-      deprecated: false
-      produces:
-        - application/json
-      parameters: []
-      responses:
-        '200':
-          description: Return a single ticket object with selection IDs attached to bets
-          schema:
-            $ref: '#/definitions/ToteBet'
-          headers: {}
-        '400':
-          description: Standardised error response
-          schema:
-            $ref: '#/definitions/Error'
-        '404':
-          description: Standardised not found response
-          schema:
-            $ref: '#/definitions/Error'            
   '/tote/bets/{id}':
     get:
       description: >-
