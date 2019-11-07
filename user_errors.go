@@ -1,6 +1,19 @@
 package api
 
 const (
+	RateLimit = "3"
+
+	// Missing fields
+	TxTypeId        = "ERR4000"
+	TxReference     = "ERR4001"
+	TxAmountInvalid = "ERR4002"
+	TxBetId         = "ERR4003"
+	TxAuthCode      = "ERR4004"
+	TxIdInvalid     = "ERR4005"
+	PartnerKey      = "ERR4006"
+	Hash            = "ERR4007"
+	TxTypeIdInvalid = "ERR4008"
+	TxUserId        = "ERR4009"
 
 	// Missing fields
 	Email            = "ERR1000"
@@ -32,12 +45,14 @@ const (
 	FirstnameInvalid   = "ERR2025"
 	LastnameInvalid    = "ERR2026"
 	LoginInvalid       = "ERR2027"
+	HashInvalid        = "ERR2028"
 
 	// Reset tokens
 	ResetTokenInvalid = "ERR2200"
 
-	// Password complexity
+	// Complexity
 	PasswordComplexity = "ERR2250"
+	UsernameComplexity = "ERR2260"
 
 	// KYC
 	AgeNotMet = "ERR2002"
@@ -46,9 +61,13 @@ const (
 	UserVerificationFail = "ERR2100"
 	AddressWarning       = "ERR2101"
 	UserWarning          = "ERR2102"
+	UserKycFail          = "ERR2103"
 
-	// Rate limit failure
-	TooManyLoginFails = "ERR2400"
+	// System error
+	SystemException  = "SYS1000"
+	TokenInvalid     = "SYS2000"
+	LoginTimeOut     = "SYS3000"
+	GenericErrorCode = "SYS9999"
 
 	// Suspension / Exclusion
 	UserExcluded  = "ERR3000"
@@ -57,9 +76,14 @@ const (
 	// Not Found
 	EmailNotFound = "ERR3100"
 
-	// System error
-	SystemException  = "SYS1000"
-	TokenInvalid     = "SYS2000"
-	LoginTimeOut     = "SYS3000"
-	GenericErrorCode = "SYS9999"
+	// Failure
+	TooManyLoginFails = "ERR2400"
+
+	// Gamstop
+	GamstopRegistered = "ERR2450"
+
+	// Transactions API
+	InsufficientFunds     = "ERR4050"
+	TransactionNotFound   = "ERR4060"
+	TransactionNotPending = "ERR4070"
 )
