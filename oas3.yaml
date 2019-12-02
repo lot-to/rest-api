@@ -598,7 +598,7 @@ paths:
           description: Unauthorised error response
           schema:
             $ref: '#/definitions/Error'
-  '/transaction/{id}':
+  '/transactions/{id}':
     get:
       description: This returns the translation data for a particular ID
       summary: Get a transaction by its ID
@@ -624,6 +624,58 @@ paths:
           required: true
           type: string
           description: 'HMAC(string[transactionId, userId, partnerKey, debug], partnerSecretKey)'
+      responses:
+        '200':
+          description: The specified transaction object
+          schema:
+            $ref: '#/definitions/Transaction'
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: '#/definitions/Error'
+  '/transactions/{id}/charge':
+    post:
+      description: This Charges a transaction that was previously pending
+      summary: Get a transaction by its ID
+      tags:
+        - Transactions
+      operationId: TransactionByIdCharge
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: Transaction Id
+      responses:
+        '200':
+          description: The specified transaction object
+          schema:
+            $ref: '#/definitions/Transaction'
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: '#/definitions/Error'
+  '/transactions/{id}/rollback':
+    post:
+      description: This Cancells a transaction that was previously pending
+      summary: Cancel a transaction by its ID
+      tags:
+        - Transactions
+      operationId: TransactionByIdRollback
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: Transaction Id
       responses:
         '200':
           description: The specified transaction object
@@ -1032,6 +1084,42 @@ paths:
           description: Unauthorised error response
           schema:
             $ref: '#/definitions/Error'
+  /user/me/migrate:
+    put:
+      description: Mark the account as completed in the migration process
+      summary: Mark player as migrated
+      tags:
+      - Users
+      operationId: UserMigratePut
+      deprecated: false
+      produces:
+      - application/json
+      responses:
+        '200':
+          description: On success, a 200 OK is issued
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: "#/definitions/Error"
+  /user/me/terms:
+    put:
+      description: Accept the new T&Cs for a player
+      summary: Accept T&Cs
+      tags:
+      - Users
+      operationId: UserTermsPut
+      deprecated: false
+      produces:
+      - application/json
+      responses:
+        '200':
+          description: On success, a 200 OK is issued
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: "#/definitions/Error"
   /user/password:
     put:
       description: >-
@@ -1272,6 +1360,31 @@ paths:
           description: Standardised not found response
           schema:
             $ref: '#/definitions/Error'
+  /tote/bets:
+    post:
+      description: Returns a list of all bets for and authenticated user or partner
+      summary: Get the Tote bet types list
+      tags:
+        - Tote
+      operationId: GetBets
+      deprecated: false
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        '200':
+          description: Return a single ticket object with selection IDs attached to bets
+          schema:
+            $ref: '#/definitions/ToteBet'
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: '#/definitions/Error'
+        '404':
+          description: Standardised not found response
+          schema:
+            $ref: '#/definitions/Error' 
   '/tote/bets/{id}':
     get:
       description: >-
@@ -1587,11 +1700,38 @@ paths:
           description: maximum number of results to return
       responses:
         '200':
-          description: Returns an array of pool objectsp
+          description: Returns an array of pool objects
           schema:
             type: array
             items:
               $ref: '#/definitions/Pool'
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: '#/definitions/Error'
+  /tote/pools/{id}:
+    get:
+      description: |
+        Return details of a pool by id
+      summary: Get the details of a Tote pool
+      tags:
+        - Tote
+      operationId: TotePoolGet
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: ''
+      responses:
+        '200':
+          description: Returns a pool object
+          schema:
+            $ref: '#/definitions/Pool'
           headers: {}
         '400':
           description: Standardised error response
@@ -1737,8 +1877,65 @@ paths:
             description: Demo mode is not available for that Game ID
             schema:
               $ref: '#/definitions/Error'
-          
-          
+  '/sendgrid/event':
+      post: 
+        operationId: PostEvent
+        description: Receive sendgrid events
+        summary: Receive sendgrid events
+        tags:
+          - Sendgrid
+        deprecated: false
+        produces:
+          - application/json
+        parameters:
+          - name: key
+            in: query
+            required: true
+            type: string
+            description: 'Partner Key'
+        responses:
+          '200':
+            description: Mixpanel was successful
+          '400':
+            description: Missing parameter
+            schema:
+              $ref: '#/definitions/Error'
+          '500':
+            description: Standardised error response
+            schema:
+              $ref: '#/definitions/Error'
+  '/sendgrid/send/{template}':
+      get: 
+        operationId: PostWebhook
+        description: Send a sendgrid email from mixpanel
+        summary: Send mixpanel emails
+        tags:
+          - Sendgrid
+        deprecated: false
+        produces:
+          - application/json
+        parameters:
+          - name: key
+            in: query
+            required: true
+            type: string
+            description: 'Partner Key'
+          - name: template
+            in: path
+            required: true
+            type: string
+            description: 'Sendgrid Template Name'
+        responses:
+          '200':
+            description: Sendgrid was successful
+          '400':
+            description: Missing parameter
+            schema:
+              $ref: '#/definitions/Error'
+          '500':
+            description: Standardised error response
+            schema:
+              $ref: '#/definitions/Error'          
 definitions:
   Category:
     title: Category
@@ -3113,6 +3310,9 @@ definitions:
       reference:
         example: Add-Funds
         type: string
+      charge:
+        example: true
+        type: boolean
     required:
       - userId
       - amount
