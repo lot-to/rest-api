@@ -1817,6 +1817,31 @@ paths:
             description: Standardised Error response
             schema:
               $ref: '#/definitions/Error'
+  '/pariplay/webhook/{event}':
+      post:
+        operationId: ProcessPariplayWebhook
+        description: Process pariplay webhooks
+        summary: Pariplay webhook
+        tags:
+          - Pariplay
+        deprecated: false
+        parameters:
+          - name: event
+            in: path
+            required: true
+            type: string
+            description: 'Pariplay Event Name'
+        produces:
+          - application/json
+        responses:
+          '200':
+            description: Returns an array of Pariplay Games
+            schema:
+              $ref: '#/definitions/PariplayGames'
+          '500':
+            description: Standardised Error response
+            schema:
+              $ref: '#/definitions/Error'
   '/pariplay/token/{game}':
       get: 
         operationId: GetPariplayToken
@@ -1877,6 +1902,7 @@ paths:
             description: Demo mode is not available for that Game ID
             schema:
               $ref: '#/definitions/Error'
+         
   '/sendgrid/event':
       post: 
         operationId: PostEvent
