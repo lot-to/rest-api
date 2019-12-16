@@ -571,6 +571,28 @@ paths:
             items:
               $ref: '#/definitions/SportBet'
           headers: {}
+  /stats:
+    get:
+      description: Validates whether a given bet ID is the users first bet.
+      summary: Return a boolean true on first bet
+      tags:
+        - Stats
+      operationId: StatsGet
+      produces:
+       - application/json
+      parameters: []
+      responses:
+       '200':
+        description: Boolean 
+        schema:
+          type: boolean
+          items:
+           $ref: '#/definitions/Stats'
+        headers: {}
+       '400':
+        description: Standardised error response
+        schema:
+          $ref: '#/definitions/Error'        
   /transactions:
     get:
       description: Return the transactions for an authenticated player.
@@ -3163,6 +3185,12 @@ definitions:
         example: >-
           eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbiI6Ii1ERU1PLSIsImF1ZCI6ImFwaS5kZXYubG90LnRvIiwiZXhwIjoxNTU3MTY0MjQ0LCJpc3MiOiJsb3QudG8vdjEvYXBpLXVzZXJzIiwic3ViIjoiMSIsImp0aSI6IjFhYTRhMWZiLTczZmMtNDEyYS1iZGIyLWY2MWM2ODkwY2ZkMSIsImlhdCI6MTU1NzE2MDY0NH0.0KfFgw-7vKyO2b4uJkRsy0lusqIx3v_aGtv57JcuhbU
         type: string
+  Stats:
+    title: Stats
+    type: object
+    properties:
+      status:
+        type: boolean
   Tournament:
     title: Tournament
     type: object
