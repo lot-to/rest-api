@@ -571,16 +571,20 @@ paths:
             items:
               $ref: '#/definitions/SportBet'
           headers: {}
-  /stats:
+  /stats/tote/first/{betId}:
     get:
       description: Validates whether a given bet ID is the users first bet.
-      summary: Return a boolean true on first bet
+      summary: Return true on first bet, else false
       tags:
         - Stats
       operationId: StatsGet
       produces:
        - application/json
-      parameters: []
+      parameters: 
+       - name: betId
+         in: path
+         required: true
+         type: string
       responses:
        '200':
         description: Boolean 
@@ -592,7 +596,7 @@ paths:
        '400':
         description: Standardised error response
         schema:
-          $ref: '#/definitions/Error'        
+          $ref: '#/definitions/Error'
   /transactions:
     get:
       description: Return the transactions for an authenticated player.
