@@ -577,7 +577,7 @@ paths:
       summary: Return true on first bet, else false
       tags:
         - Stats
-      operationId: StatsGet
+      operationId: StatsGetIsFirstBetById
       produces:
        - application/json
       parameters: 
@@ -591,12 +591,38 @@ paths:
         schema:
           type: boolean
           items:
-           $ref: '#/definitions/Stats'
+           $ref: '#/definitions/StatsIsFirstBet'
         headers: {}
        '400':
         description: Standardised error response
         schema:
           $ref: '#/definitions/Error'
+  /stats/user/{userId}:
+    get:
+      description: Gets a collection of stats related to the provided User ID
+      summary: Returns users stats object
+      tags:
+        - Stats
+      operationId: StatsGetByUserId
+      produces:
+      - application/json
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        type: integer
+      responses:
+        '200':
+          description: Stats
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/Stats'
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: '#/definitions/Error'
   /transactions:
     get:
       description: Return the transactions for an authenticated player.
@@ -662,7 +688,7 @@ paths:
             $ref: '#/definitions/Error'
   '/transactions/{id}/charge':
     post:
-      description: This Charges a transaction that was previously pending
+      description: This charges a transaction that is not currently charged
       summary: Get a transaction by its ID
       tags:
         - Transactions
@@ -688,7 +714,7 @@ paths:
             $ref: '#/definitions/Error'
   '/transactions/{id}/rollback':
     post:
-      description: This Cancells a transaction that was previously pending
+      description: This Cancels a transaction that was previously pending
       summary: Cancel a transaction by its ID
       tags:
         - Transactions
@@ -1371,7 +1397,13 @@ paths:
       deprecated: false
       produces:
         - application/json
-      parameters: []
+      parameters: 
+        - name: body
+          in: body
+          required: false
+          description: The JSON body payload to send a registration request.
+          schema:
+            $ref: '#/definitions/Betslip'
       responses:
         '200':
           description: Return a single ticket object with selection IDs attached to bets
@@ -1400,6 +1432,37 @@ paths:
       responses:
         '200':
           description: Return a single ticket object with selection IDs attached to bets
+          schema:
+            $ref: '#/definitions/ToteBet'
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: '#/definitions/Error'
+        '404':
+          description: Standardised not found response
+          schema:
+            $ref: '#/definitions/Error' 
+            
+  /tote/bets/pool/{id}:
+    get:
+      description: Returns a list of filtered bets by their pool type Ids
+      summary: Get the Tote bets filtered by pool type
+      tags:
+        - Tote
+      operationId: GetBetsByPoolType
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: ''
+      responses:
+        '200':
+          description: Returns a list of filtered bets by their pool type Ids
           schema:
             $ref: '#/definitions/ToteBet'
           headers: {}
@@ -1793,7 +1856,7 @@ paths:
           description: Standardised not found response
           schema:
             $ref: '#/definitions/Error'
-  '/pariplay/instant-wins':
+  '/pariplay/games':
       get:
         operationId: GetPariplayInstants
         description: Returns a list of instant win pariplay games
@@ -1818,117 +1881,6 @@ paths:
             description: Standardised Error response
             schema:
               $ref: '#/definitions/Error'
-  '/pariplay/scratch-cards':
-      get:
-        operationId: GetPariplayScratchcards
-        description: Returns a list of scratch card pariplay games
-        summary: Get scratch card games
-        tags:
-          - Pariplay
-        deprecated: false
-        produces:
-          - application/json
-        parameters:
-          - name: key
-            in: query
-            required: true
-            type: string
-            description: 'Partner Key'
-        responses:
-          '200':
-            description: Returns an array of Pariplay Games
-            schema:
-              $ref: '#/definitions/PariplayGames'
-          '500':
-            description: Standardised Error response
-            schema:
-              $ref: '#/definitions/Error'
-  '/pariplay/webhook/{event}':
-      post:
-        operationId: ProcessPariplayWebhook
-        description: Process pariplay webhooks
-        summary: Pariplay webhook
-        tags:
-          - Pariplay
-        deprecated: false
-        parameters:
-          - name: event
-            in: path
-            required: true
-            type: string
-            description: 'Pariplay Event Name'
-        produces:
-          - application/json
-        responses:
-          '200':
-            description: Returns an array of Pariplay Games
-            schema:
-              $ref: '#/definitions/PariplayGames'
-          '500':
-            description: Standardised Error response
-            schema:
-              $ref: '#/definitions/Error'
-  '/pariplay/token/{game}':
-      get: 
-        operationId: GetPariplayToken
-        description: Returns a demo and real URL for a specified pariplay game
-        summary: Get pariplay URLs
-        tags:
-          - Pariplay
-        deprecated: false
-        produces:
-          - application/json
-        parameters:
-          - name: key
-            in: query
-            required: true
-            type: string
-            description: 'Partner Key'
-          - name: PlayerId
-            in: query
-            required: true
-            type: integer
-            description: 'Player ID'
-          - name: PlayerIp
-            in: query
-            required: true
-            type: string
-            description: 'Player IP'
-          - name: game
-            in: path
-            required: true
-            type: integer
-            description: 'Pariplay Game ID'
-        responses:
-          '200':
-            description: Returns demoURL and realURL
-            schema:
-              $ref: '#/definitions/PariplayToken'
-          '400':
-            description: Missing parameter
-            schema:
-              $ref: '#/definitions/Error'
-          '403':
-            description: IP Address is restricted
-            schema:
-              $ref: '#/definitions/Error'
-          '404':
-            description: Standardised not found response
-            schema:
-              $ref: '#/definitions/Error'
-          '451':
-            description: Game unavailable in user's country
-            schema:
-              $ref: '#/definitions/Error'
-          '500':
-            description: Standardised error response
-            schema:
-              $ref: '#/definitions/Error'
-          '501':
-            description: Demo mode is not available for that Game ID
-            schema:
-              $ref: '#/definitions/Error'
-         
   '/sendgrid/event':
       post: 
         operationId: PostEvent
@@ -1957,7 +1909,7 @@ paths:
             schema:
               $ref: '#/definitions/Error'
   '/sendgrid/send/{template}':
-      get: 
+      post: 
         operationId: PostWebhook
         description: Send a sendgrid email from mixpanel
         summary: Send mixpanel emails
@@ -3189,12 +3141,58 @@ definitions:
         example: >-
           eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbiI6Ii1ERU1PLSIsImF1ZCI6ImFwaS5kZXYubG90LnRvIiwiZXhwIjoxNTU3MTY0MjQ0LCJpc3MiOiJsb3QudG8vdjEvYXBpLXVzZXJzIiwic3ViIjoiMSIsImp0aSI6IjFhYTRhMWZiLTczZmMtNDEyYS1iZGIyLWY2MWM2ODkwY2ZkMSIsImlhdCI6MTU1NzE2MDY0NH0.0KfFgw-7vKyO2b4uJkRsy0lusqIx3v_aGtv57JcuhbU
         type: string
-  Stats:
-    title: Stats
+  StatsIsFirstBet:
+    title: StatsIsFirstBet
     type: object
     properties:
       status:
         type: boolean
+  Stats:
+    title: Stats
+    type: object
+    properties:
+      betsTally:
+        type: integer
+      betsTotal:
+        type: integer
+      winsTally:
+        type: integer
+      winsTotal:
+        type: integer
+      depositTally:
+        type: integer
+      depostiTotal:
+        type: integer
+      toteTotal:
+        type: integer
+      toteTally:
+        type: integer
+      toteWinTotal:
+        type: integer
+      toteWinTally:
+        type: integer
+      withdrawTotal:
+        type: integer
+      withdrawTally:
+        type: integer
+      spendTotal:
+        type: integer
+      netAdjustments:
+        type: integer
+      lastBetDate:
+        type: integer
+      lastWinDate:
+        type: integer
+      lastDepositDate:
+        type: integer
+      lastWithdrawDate:
+        type: integer
+      lastContactDate:
+        type: integer
+      lastToteWinDate:
+        type: integer
+      lastToteDate:
+        type: integer
   Tournament:
     title: Tournament
     type: object
@@ -3675,6 +3673,27 @@ definitions:
           $ref: '#/definitions/BetslipLeg'
     required:
       - legs
+  Betslip:
+    title: Betslip
+    type: object
+    properties:
+      ipAddress:
+        example: "192.168.0.1"
+        type: string
+      lat: 
+        example: "0.4"
+        type: string
+      Long:
+        example: "0.4"
+        type: string
+      totalStake:
+        example: 100
+        type: integer
+        format: int32
+      bets:
+        type: array
+        items:
+          $ref: '#/definitions/BetslipBet'
   BetslipTicket:
     title: BetslipTicket
     type: object
