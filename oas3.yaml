@@ -1474,7 +1474,7 @@ paths:
           description: Standardised not found response
           schema:
             $ref: '#/definitions/Error' 
-  '/tote/bets/{id}':
+  '/tote/bet/{id}':
     get:
       description: >-
         Get a single bet by its LOTTO ID. This endpoint can be used to return an
