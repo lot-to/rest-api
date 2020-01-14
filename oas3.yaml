@@ -1444,13 +1444,13 @@ paths:
           schema:
             $ref: '#/definitions/Error' 
             
-  /tote/bets/pool/{id}:
+  /tote/bettype/{id}/bets:
     get:
-      description: Returns a list of filtered bets by their pool type Ids
-      summary: Get the Tote bets filtered by pool type
+      description: Returns a list of filtered bets by their bet type Ids
+      summary: Get the Tote bets filtered by bet type
       tags:
         - Tote
-      operationId: GetBetsByPoolType
+      operationId: GetBetsByBetType
       deprecated: false
       produces:
         - application/json
@@ -1462,7 +1462,7 @@ paths:
           description: ''
       responses:
         '200':
-          description: Returns a list of filtered bets by their pool type Ids
+          description: Returns a list of filtered bets by their bet type Ids
           schema:
             $ref: '#/definitions/ToteBet'
           headers: {}
