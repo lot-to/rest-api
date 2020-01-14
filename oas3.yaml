@@ -1444,7 +1444,7 @@ paths:
           schema:
             $ref: '#/definitions/Error' 
             
-  /tote/bettype/{id}/bets:
+  /tote/bets/pool/{id}:
     get:
       description: Returns a list of filtered bets by their bet type Ids
       summary: Get the Tote bets filtered by bet type
