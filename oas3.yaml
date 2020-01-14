@@ -1419,7 +1419,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
   /tote/bets:
-    post:
+    get:
       description: Returns a list of all bets for and authenticated user or partner
       summary: Get the Tote bet types list
       tags:
@@ -1879,6 +1879,116 @@ paths:
               $ref: '#/definitions/PariplayGames'
           '500':
             description: Standardised Error response
+            schema:
+              $ref: '#/definitions/Error'
+  '/pariplay/scratch-cards':
+      get:
+        operationId: GetPariplayScratchcards
+        description: Returns a list of scratch card pariplay games
+        summary: Get scratch card games
+        tags:
+          - Pariplay
+        deprecated: false
+        produces:
+          - application/json
+        parameters:
+          - name: key
+            in: query
+            required: true
+            type: string
+            description: 'Partner Key'
+        responses:
+          '200':
+            description: Returns an array of Pariplay Games
+            schema:
+              $ref: '#/definitions/PariplayGames'
+          '500':
+            description: Standardised Error response
+            schema:
+              $ref: '#/definitions/Error'
+  '/pariplay/webhook/{event}':
+      post:
+        operationId: ProcessPariplayWebhook
+        description: Process pariplay webhooks
+        summary: Pariplay webhook
+        tags:
+          - Pariplay
+        deprecated: false
+        parameters:
+          - name: event
+            in: path
+            required: true
+            type: string
+            description: 'Pariplay Event Name'
+        produces:
+          - application/json
+        responses:
+          '200':
+            description: Returns an array of Pariplay Games
+            schema:
+              $ref: '#/definitions/PariplayGames'
+          '500':
+            description: Standardised Error response
+            schema:
+              $ref: '#/definitions/Error'
+  '/pariplay/token/{game}':
+      get: 
+        operationId: GetPariplayToken
+        description: Returns a demo and real URL for a specified pariplay game
+        summary: Get pariplay URLs
+        tags:
+          - Pariplay
+        deprecated: false
+        produces:
+          - application/json
+        parameters:
+          - name: key
+            in: query
+            required: true
+            type: string
+            description: 'Partner Key'
+          - name: PlayerId
+            in: query
+            required: true
+            type: integer
+            description: 'Player ID'
+          - name: PlayerIp
+            in: query
+            required: true
+            type: string
+            description: 'Player IP'
+          - name: game
+            in: path
+            required: true
+            type: integer
+            description: 'Pariplay Game ID'
+        responses:
+          '200':
+            description: Returns demoURL and realURL
+            schema:
+              $ref: '#/definitions/PariplayToken'
+          '400':
+            description: Missing parameter
+            schema:
+              $ref: '#/definitions/Error'
+          '403':
+            description: IP Address is restricted
+            schema:
+              $ref: '#/definitions/Error'
+          '404':
+            description: Standardised not found response
+            schema:
+              $ref: '#/definitions/Error'
+          '451':
+            description: Game unavailable in user's country
+            schema:
+              $ref: '#/definitions/Error'
+          '500':
+            description: Standardised error response
+            schema:
+              $ref: '#/definitions/Error'
+          '501':
+            description: Demo mode is not available for that Game ID
             schema:
               $ref: '#/definitions/Error'
   '/sendgrid/event':
