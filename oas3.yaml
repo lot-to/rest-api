@@ -571,7 +571,7 @@ paths:
             items:
               $ref: '#/definitions/SportBet'
           headers: {}
-  /stats/tote/first/{betId}:
+  /stats/tote/first/{betId}/ticket/{ticketId}:
     get:
       description: Validates whether a given bet ID is the users first bet.
       summary: Return true on first bet, else false
@@ -582,6 +582,10 @@ paths:
        - application/json
       parameters: 
        - name: betId
+         in: path
+         required: true
+         type: string
+       - name: ticketId
          in: path
          required: true
          type: string
