@@ -1154,6 +1154,31 @@ paths:
           description: Standardised error response
           schema:
             $ref: "#/definitions/Error"
+  /user/me/marketing:
+    put:
+      description: Update marketing preferences
+      summary: Update Marketing Preferences
+      tags:
+      - Users
+      operationId: UserMarketingPut
+      deprecated: false
+      produces:
+      - application/json
+      parameters:
+        - name: body
+          in: body
+          required: false
+          description: The marketing preferences
+          schema:
+            $ref: '#/definitions/MarketingPreferences'
+      responses:
+        '200':
+          description: On success, a 200 OK is issued
+          headers: {}
+        '400':
+          description: Standardised error response
+          schema:
+            $ref: "#/definitions/Error"
   /user/me/terms:
     put:
       description: Accept the new T&Cs for a player
@@ -1762,6 +1787,41 @@ paths:
             $ref: '#/definitions/Error'
         '404':
           description: Standardised not found response
+          schema:
+            $ref: '#/definitions/Error'
+  /tote/results:
+    get:
+      description: |
+        Return a list of results for today
+      summary: Get the list of Tote results
+      tags:
+        - Tote
+      operationId: ToteResultsGet
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: date
+          in: query
+          required: false
+          type: string
+          description: Used to change the results date
+        - name: limit
+          in: query
+          required: false
+          type: integer
+          format: int32
+          description: maximum number of results to return
+      responses:
+        '200':
+          description: Returns an array of result objects
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Pool'
+          headers: {}
+        '400':
+          description: Standardised error response
           schema:
             $ref: '#/definitions/Error'
   /tote/pools:
@@ -3108,6 +3168,21 @@ definitions:
       - county
       - postcode
       - countryIso
+  MarketingPreferences:
+    title: MarketingPreferences
+    type: object
+    properties:
+      marketingPrefs:
+        description: >-
+          An array of communication preferences the player wants to opt in to
+          receive. Must be one of: email, sms, phone
+        example:
+          - email
+          - sms
+          - phone
+        type: object
+    required:
+      - marketingPrefs
   Security:
     title: Security
     type: object
